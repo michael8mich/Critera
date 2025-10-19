@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Bank Api",
+  "type": "object",
+  "properties": {
+    "entrepreneur": {
+      "type": "object",
+      "properties": {
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "role": { "type": "string" },
+        "companyName": { "type": "string" },
+        "nc": { "type": "integer" },
+        "phone": { "type": "string", "pattern": "^\\+?[0-9]{7,15}$" },
+        "email": { "type": "string", "format": "email" },
+        "owner": { "type": "string" },
+        "mortgage": { "type": "string" },
+        "encumbrance": { "type": "string" }
+      },
+      "required": ["firstName", "lastName", "role", "companyName", "nc", "phone", "email", "owner", "mortgage", "encumbrance"],
+      "additionalProperties": false
+    },
+    "funding": {
+      "type": "object",
+      "properties": {
+        "fundingType": { "type": "string" },
+        "previousFunders": { "type": "string" },
+        "numProjectsAsContractor": { "type": "integer", "minimum": 0 },
+        "numProjectsAsEntrepreneur": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["fundingType", "previousFunders", "numProjectsAsContractor", "numProjectsAsEntrepreneur"],
+      "additionalProperties": false
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "city": { "type": "string" },
+        "street": { "type": "string" },
+        "number": { "type": "integer", "minimum": 0 },
+        "block": { "type": "integer", "minimum": 0 },
+        "parcel": { "type": "integer", "minimum": 0 },
+        "officialStatus": { "type": "string" },
+        "plannedStatus": { "type": "string" },
+        "ownersAppartements": { "type": "integer", "minimum": 0 },
+        "sellingAppartements": { "type": "integer", "minimum": 0 },
+        "soldAppartements": { "type": "integer", "minimum": 0 },
+        "totalSales": { "type": "integer", "minimum": 0 },
+        "parkingType": { "type": "string" },
+        "parkingCount": { "type": "integer", "minimum": 0 },
+        "appraisalReport": {
+          "type": "string",
+          "contentEncoding": "base64",
+          "contentMediaType": "application/octet-stream"
+        }
+      },
+      "required": ["type", "city", "street", "number", "block", "parcel", "officialStatus", "plannedStatus", "ownersAppartements", "sellingAppartements", "soldAppartements", "totalSales", "parkingType", "parkingCount", "appraisalReport"],
+      "additionalProperties": false
+    },
+    "financing": {
+      "type": "object",
+      "properties": {
+        "creditPeriodMonths": { "type": "integer", "minimum": 0 },
+        "creditLine": { "type": "integer", "minimum": 0 },
+        "requiredEquityRatio": { "type": "number", "minimum": 0, "maximum": 100 },
+        "requiredEquityTotal": { "type": "integer", "minimum": 0 },
+        "equityInjectionRatio": { "type": "number", "minimum": 0, "maximum": 100 },
+        "equityInjectionTotal": { "type": "integer", "minimum": 0 },
+        "netSponsorEquityRatio": { "type": "number", "minimum": 0, "maximum": 100 },
+        "netSponsorEquityTotal": { "type": "integer", "minimum": 0 },
+        "InterestOnEquityInjection": { "type": "number" },
+        "SeniorDebtInterest": { "type": "number" }
+      },
+      "required": ["creditPeriodMonths", "creditLine", "requiredEquityRatio", "requiredEquityTotal", "equityInjectionRatio", "equityInjectionTotal", "netSponsorEquityRatio", "netSponsorEquityTotal", "InterestOnEquityInjection", "SeniorDebtInterest"],
+      "additionalProperties": false
+    },
+    "fee": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ArrangementAndSetupFee": { "type": "integer", "minimum": 0 },
+          "legalExpenses": { "type": "integer", "minimum": 0 },
+          "creditManagementFees": { "type": "number", "minimum": 0, "maximum": 100 },
+          "saleLawGuaranteeFee": { "type": "number", "minimum": 0, "maximum": 100 },
+          "performanceGuaranteeFee": { "type": "number", "minimum": 0, "maximum": 100 }
+        },
+        "required": ["ArrangementAndSetupFee", "legalExpenses", "creditManagementFees", "saleLawGuaranteeFee", "performanceGuaranteeFee"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "creditConditions": {
+      "type": "object",
+      "properties": {
+        "requiredPreSale": { "type": "number", "minimum": 0, "maximum": 100 },
+        "requiredPreTotal": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["requiredPreSale", "requiredPreTotal"],
+      "additionalProperties": false
+    },
+    "financialData": {
+      "type": "object",
+      "properties": {
+        "appraisal": {
+          "type": "object",
+          "properties": {
+            "pricePerSquareMeter": { "type": "integer", "minimum": 0 },
+            "revenue": { "type": "integer", "minimum": 0 },
+            "expenses": { "type": "integer", "minimum": 0 },
+            "profit": { "type": "integer" },
+            "profitMargin": { "type": "number", "minimum": 0, "maximum": 100 }
+          },
+          "required": ["pricePerSquareMeter", "revenue", "expenses", "profit", "profitMargin"],
+          "additionalProperties": false
+        },
+        "ai": {
+          "type": "object",
+          "properties": {
+            "pricePerSquareMeter": { "type": "integer", "minimum": 0 },
+            "revenue": { "type": "integer", "minimum": 0 },
+            "expenses": { "type": "integer", "minimum": 0 },
+            "profit": { "type": "integer" },
+            "profitMargin": { "type": "number", "minimum": 0, "maximum": 100 }
+          },
+          "required": ["pricePerSquareMeter", "revenue", "expenses", "profit", "profitMargin"],
+          "additionalProperties": false
+        },
+        "banker": {
+          "type": "object",
+          "properties": {
+            "pricePerSquareMeter": { "type": "integer", "minimum": 0 },
+            "revenue": { "type": "integer", "minimum": 0 },
+            "expenses": { "type": "integer", "minimum": 0 },
+            "profit": { "type": "integer" },
+            "profitMargin": { "type": "number", "minimum": 0, "maximum": 100 }
+          },
+          "required": ["pricePerSquareMeter", "revenue", "expenses", "profit", "profitMargin"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["appraisal", "ai", "banker"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["entrepreneur", "funding", "project", "financing", "fee", "creditConditions", "financialData"],
+  "additionalProperties": false
+}

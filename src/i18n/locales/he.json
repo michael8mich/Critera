@@ -1,0 +1,124 @@
+{
+  "nav": {
+    "home": "בית",
+    "about": "אודות",
+    "services": "שירותים",
+    "contact": "צור קשר",
+    "language": "שפה"
+  },
+  "home": {
+    "title": "ברוכים הבאים לקריטרה",
+    "subtitle": "בנה חוויות דיגיטליות מדהימות עם מסגרת האפליקציה החדשנית שלנו React TypeScript Redux.",
+    "getStarted": "התחל עכשיו",
+    "learnMore": "למד עוד",
+    "features": {
+      "performance": {
+        "title": "ביצועים מהירים",
+        "description": "מוטב למהירות וביצועים עם דפוסי React מודרניים ושיטות עבודה מומלצות."
+      },
+      "design": {
+        "title": "עיצוב יפה",
+        "description": "קומפוננטים בעלי עיצוב קפדני עם תשומת לב לפרטים וחוויית משתמש."
+      },
+      "typeSafe": {
+        "title": "בטוח מבחינת סוג",
+        "description": "בנוי עם TypeScript לחוויית פיתוח טובה יותר ופחות שגיאות בזמן ריצה."
+      }
+    }
+  },
+  "footer": {
+    "description": "בניית חוויות דיגיטליות מדהימות עם טכנולוגיה חדשנית.",
+    "quickLinks": "קישורים מהירים",
+    "support": "תמיכה",
+    "helpCenter": "מרכז עזרה",
+    "documentation": "תיעוד",
+    "privacy": "מדיניות פרטיות",
+    "terms": "תנאי שירות",
+    "rightsReserved": "כל הזכויות שמורות."
+  },
+  "buttons": {
+    "submit": "שלח",
+    "cancel": "בטל",
+    "save": "שמור",
+    "edit": "ערוך",
+    "delete": "מחק",
+    "close": "סגור"
+  },
+  "forms": {
+    "email": "אימייל",
+    "password": "סיסמה",
+    "name": "שם",
+    "required": "שדה חובה",
+    "emailPlaceholder": "הכנס את האימייל שלך",
+    "namePlaceholder": "הכנס את השם שלך"
+  },
+  "language": {
+    "hebrew": "עברית",
+    "english": "English"
+  },
+  "entrepreneur": {
+    "title": "מערכת ניהול יזמים",
+    "tabs": {
+      "entrepreneur": "יזם",
+      "funding": "מימון",
+      "project": "פרויקט",
+      "financing": "מימון פרויקט",
+      "fee": "עמלות",
+      "creditConditions": "תנאי אשראי",
+      "financialData": "נתונים פיננסיים"
+    },
+    "fields": {
+      "firstName": "שם פרטי",
+      "lastName": "שם משפחה",
+      "role": "תפקיד",
+      "companyName": "שם החברה",
+      "nc": "ח.פ/ע.מ",
+      "phone": "טלפון",
+      "email": "אימייל",
+      "owner": "בעלים",
+      "mortgage": "משכנתא",
+      "encumbrance": "עיקול",
+      "fundingType": "סוג מימון",
+      "previousFunders": "ממנים קודמים",
+      "numProjectsAsContractor": "פרויקטים כקבלן",
+      "numProjectsAsEntrepreneur": "פרויקטים כיזם",
+      "type": "סוג",
+      "city": "עיר",
+      "street": "רחוב",
+      "number": "מספר",
+      "block": "גוש",
+      "parcel": "חלקה",
+      "officialStatus": "סטטוס רשמי",
+      "plannedStatus": "סטטוס מתוכנן",
+      "ownersAppartements": "דירות בעלים",
+      "sellingAppartements": "דירות למכירה",
+      "soldAppartements": "דירות שנמכרו",
+      "totalSales": "סה״כ מכירות",
+      "parkingType": "סוג חניה",
+      "parkingCount": "מספר חניות",
+      "appraisalReport": "דוח שמאי",
+      "creditPeriodMonths": "תקופת אשראי (חודשים)",
+      "creditLine": "מסגרת אשראי",
+      "requiredEquityRatio": "יחס הון עצמי נדרש (%)",
+      "requiredEquityTotal": "סה״כ הון עצמי נדרש",
+      "equityInjectionRatio": "יחס הזרמת הון (%)",
+      "equityInjectionTotal": "סה״כ הזרמת הון",
+      "netSponsorEquityRatio": "יחס הון נטו ספונסר (%)",
+      "netSponsorEquityTotal": "סה״כ הון נטו ספונסר",
+      "InterestOnEquityInjection": "ריבית על הזרמת הון",
+      "SeniorDebtInterest": "ריבית חוב בכיר",
+      "ArrangementAndSetupFee": "עמלת הסדרה והקמה",
+      "legalExpenses": "הוצאות משפטיות",
+      "creditManagementFees": "עמלת ניהול אשראי (%)",
+      "saleLawGuaranteeFee": "עמלת ערבות חוק מכר (%)",
+      "performanceGuaranteeFee": "עמלת ערבות ביצוע (%)",
+      "requiredPreSale": "מכירה מוקדמת נדרשת (%)",
+      "requiredPreTotal": "סה״כ מכירה מוקדמת נדרשת",
+      "pricePerSquareMeter": "מחיר למ״ר",
+      "revenue": "הכנסות",
+      "expenses": "הוצאות",
+      "profit": "רווח",
+      "profitMargin": "שולי רווח (%)"
+    }
+  }
+}

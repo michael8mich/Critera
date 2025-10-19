@@ -1,0 +1,124 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "contact": "Contact",
+    "language": "Language"
+  },
+  "home": {
+    "title": "Welcome to Critera",
+    "subtitle": "Build amazing digital experiences with our cutting-edge React TypeScript Redux application framework.",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "features": {
+      "performance": {
+        "title": "Fast Performance",
+        "description": "Optimized for speed and performance with modern React patterns and best practices."
+      },
+      "design": {
+        "title": "Beautiful Design",
+        "description": "Carefully crafted components with attention to detail and user experience."
+      },
+      "typeSafe": {
+        "title": "Type Safe",
+        "description": "Built with TypeScript for better development experience and fewer runtime errors."
+      }
+    }
+  },
+  "footer": {
+    "description": "Building amazing digital experiences with cutting-edge technology.",
+    "quickLinks": "Quick Links",
+    "support": "Support",
+    "helpCenter": "Help Center",
+    "documentation": "Documentation",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "rightsReserved": "All rights reserved."
+  },
+  "buttons": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close"
+  },
+  "forms": {
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "required": "Required field",
+    "emailPlaceholder": "Enter your email",
+    "namePlaceholder": "Enter your name"
+  },
+  "language": {
+    "hebrew": "עברית",
+    "english": "English"
+  },
+  "entrepreneur": {
+    "title": "Entrepreneur Management System",
+    "tabs": {
+      "entrepreneur": "Entrepreneur",
+      "funding": "Funding",
+      "project": "Project",
+      "financing": "Project Financing",
+      "fee": "Fees",
+      "creditConditions": "Credit Conditions",
+      "financialData": "Financial Data"
+    },
+    "fields": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "role": "Role",
+      "companyName": "Company Name",
+      "nc": "Registration Number",
+      "phone": "Phone",
+      "email": "Email",
+      "owner": "Owner",
+      "mortgage": "Mortgage",
+      "encumbrance": "Encumbrance",
+      "fundingType": "Funding Type",
+      "previousFunders": "Previous Funders",
+      "numProjectsAsContractor": "Projects as Contractor",
+      "numProjectsAsEntrepreneur": "Projects as Entrepreneur",
+      "type": "Type",
+      "city": "City",
+      "street": "Street",
+      "number": "Number",
+      "block": "Block",
+      "parcel": "Parcel",
+      "officialStatus": "Official Status",
+      "plannedStatus": "Planned Status",
+      "ownersAppartements": "Owner Apartments",
+      "sellingAppartements": "Selling Apartments",
+      "soldAppartements": "Sold Apartments",
+      "totalSales": "Total Sales",
+      "parkingType": "Parking Type",
+      "parkingCount": "Parking Count",
+      "appraisalReport": "Appraisal Report",
+      "creditPeriodMonths": "Credit Period (Months)",
+      "creditLine": "Credit Line",
+      "requiredEquityRatio": "Required Equity Ratio (%)",
+      "requiredEquityTotal": "Total Required Equity",
+      "equityInjectionRatio": "Equity Injection Ratio (%)",
+      "equityInjectionTotal": "Total Equity Injection",
+      "netSponsorEquityRatio": "Net Sponsor Equity Ratio (%)",
+      "netSponsorEquityTotal": "Total Net Sponsor Equity",
+      "InterestOnEquityInjection": "Interest on Equity Injection",
+      "SeniorDebtInterest": "Senior Debt Interest",
+      "ArrangementAndSetupFee": "Arrangement and Setup Fee",
+      "legalExpenses": "Legal Expenses",
+      "creditManagementFees": "Credit Management Fees (%)",
+      "saleLawGuaranteeFee": "Sale Law Guarantee Fee (%)",
+      "performanceGuaranteeFee": "Performance Guarantee Fee (%)",
+      "requiredPreSale": "Required Pre-Sale (%)",
+      "requiredPreTotal": "Total Required Pre-Sale",
+      "pricePerSquareMeter": "Price per Square Meter",
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "profit": "Profit",
+      "profitMargin": "Profit Margin (%)"
+    }
+  }
+}

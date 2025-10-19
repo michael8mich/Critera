@@ -1,0 +1,87 @@
+{
+  "entrepreneur": {
+    "firstName": "יוסי",
+    "lastName": "כהן",
+    "role": "יזם ראשי",
+    "companyName": "כהן פיתוח בע״ם",
+    "nc": 123456789,
+    "phone": "+972-50-1234567",
+    "email": "yossi@cohen-dev.com",
+    "owner": "יוסי כהן",
+    "mortgage": "כן",
+    "encumbrance": "לא",
+    "contractorProjects": 15,
+    "entrepreneurProjects": 8
+  },
+  "funding": {
+    "fundingType": "מימון בנקאי",
+    "previousFunders": "בנק הפועלים, בנק לאומי",
+    "numProjectsAsContractor": 15,
+    "numProjectsAsEntrepreneur": 8
+  },
+  "project": {
+    "type": "מגורים",
+    "city": "תל אביב",
+    "street": "רחוב הרצל",
+    "number": 25,
+    "block": 12345,
+    "parcel": 67,
+    "officialStatus": "מאושר",
+    "plannedStatus": "בביצוע",
+    "ownersAppartements": 20,
+    "sellingAppartements": 50,
+    "soldAppartements": 30,
+    "totalSales": 75000000,
+    "parkingType": "תת קרקעי",
+    "parkingCount": 45,
+    "appraisalReport": "base64encodedreport"
+  },
+  "financing": {
+    "creditPeriodMonths": 36,
+    "creditLine": 50000000,
+    "requiredEquityRatio": 25.5,
+    "requiredEquityTotal": 12750000,
+    "equityInjectionRatio": 30.0,
+    "equityInjectionTotal": 15000000,
+    "netSponsorEquityRatio": 20.0,
+    "netSponsorEquityTotal": 10000000,
+    "InterestOnEquityInjection": 8.5,
+    "SeniorDebtInterest": 6.2
+  },
+  "fee": [
+    {
+      "ArrangementAndSetupFee": 250000,
+      "legalExpenses": 75000,
+      "creditManagementFees": 1.5,
+      "saleLawGuaranteeFee": 0.8,
+      "performanceGuaranteeFee": 1.2
+    }
+  ],
+  "creditConditions": {
+    "requiredPreSale": 40.0,
+    "requiredPreTotal": 30000000
+  },
+  "financialData": {
+    "appraisal": {
+      "pricePerSquareMeter": 15000,
+      "revenue": 75000000,
+      "expenses": 60000000,
+      "profit": 15000000,
+      "profitMargin": 20.0
+    },
+    "ai": {
+      "pricePerSquareMeter": 14500,
+      "revenue": 72500000,
+      "expenses": 58000000,
+      "profit": 14500000,
+      "profitMargin": 20.0
+    },
+    "banker": {
+      "pricePerSquareMeter": 14000,
+      "revenue": 70000000,
+      "expenses": 56000000,
+      "profit": 14000000,
+      "profitMargin": 20.0
+    }
+  }
+}
