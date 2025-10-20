@@ -122,7 +122,10 @@
       "revenue": "Revenue",
       "expenses": "Expenses",
       "profit": "Profit",
-      "profitMargin": "Profit Margin (%)"
+      "profitMargin": "Profit Margin (%)",
+      "appraisal": "Appraisal",
+      "ai": "AI",
+      "banker": "Banker"
     }
   }
 }

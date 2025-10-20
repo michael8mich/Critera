@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import {
   Container,
@@ -34,6 +34,7 @@ import {
   TableRow,
   TableCell
 } from './StyledComponents';
+import { FormField, EditButton, SaveButton, ButtonContainer } from './FormComponents';
 import { formatValue, getFieldColspan, isPillField, isTextareaField, getFieldRows, isTableLayout, getBottomShapeFields, tabAnimation } from './DataFormatters';
 
 // Helper function to check if schema defines columns layout
@@ -70,6 +71,17 @@ const hasRankColumn = (sectionName: string, schemaData?: any): boolean => {
   return columns.some(column => column.layout === 'rank');
 };
 
+// Helper function to get field schema from all columns
+const getFieldSchemaFromAllColumns = (fieldName: string, sectionName: string, schemaData?: any): any => {
+  const columns = getColumnsFromSchema(sectionName, schemaData);
+  for (const column of columns) {
+    if (column.properties && column.properties[fieldName]) {
+      return column.properties[fieldName];
+    }
+  }
+  return { type: 'string' }; // fallback
+};
+
 // Helper function to get column width from schema
 const getColumnWidth = (column: any): string => {
   return column.width || 'auto';
@@ -93,6 +105,9 @@ interface PillFieldProps {
   value: any;
   t: any;
   isRTL: boolean;
+  isEditing?: boolean;
+  onFieldChange?: (fieldName: string, value: any) => void;
+  fieldSchema?: any;
 }
 
 // Props for the data section renderer
@@ -105,6 +120,8 @@ interface DataSectionProps {
   showIcons: boolean;
   sectionName?: string;
   schemaData?: any;
+  isEditing?: boolean;
+  onFieldChange?: (fieldName: string, value: any) => void;
 }
 
 // Props for the tabbed data view
@@ -121,11 +138,23 @@ interface TabbedDataViewProps {
 }
 
 // Render a pill field component
-export const renderPillField = ({ keyName, value, t, isRTL }: PillFieldProps) => (
+export const renderPillField = ({ keyName, value, t, isRTL, isEditing = false, onFieldChange, fieldSchema }: PillFieldProps) => (
   <PillField key={keyName} $isRTL={isRTL}>
     <PillLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${keyName}`) || keyName}</PillLabel>
     <PillContainer $isRTL={isRTL}>
-      <PillValue $isRTL={isRTL}>{value}</PillValue>
+      {isEditing && onFieldChange && fieldSchema ? (
+        <FormField
+          fieldName={keyName}
+          fieldSchema={fieldSchema}
+          value={value}
+          onChange={onFieldChange}
+          isEditing={isEditing}
+          isRTL={isRTL}
+          t={t}
+        />
+      ) : (
+        <PillValue $isRTL={isRTL}>{value}</PillValue>
+      )}
     </PillContainer>
   </PillField>
 );
@@ -139,16 +168,116 @@ export const renderDataSection = ({
   isRTL, 
   showIcons, 
   sectionName = 'entrepreneur',
-  schemaData 
+  schemaData,
+  isEditing = false,
+  onFieldChange
 }: DataSectionProps) => {
   if (Array.isArray(data)) {
     const useTableLayout = isTableLayout(sectionName, schemaData);
     
     if (useTableLayout && data.length > 0) {
-      // Table layout for arrays
       const firstItem = data[0];
       const columns = Object.keys(firstItem);
       
+      // Special handling for financialData - display metrics as individual columns with metric name as header
+      if (sectionName === 'financialData' && firstItem.metric) {
+        const dataColumns = columns.filter(col => col !== 'metric' && col !== 'comments');
+        
+        return (
+          <div>
+            <SectionTitle>
+              {showIcons && <SectionIcon>{icon}</SectionIcon>}
+              {title}
+            </SectionTitle>
+            <TableContainer>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    {dataColumns.map((column) => (
+                      <TableHeaderCell key={column} $isRTL={isRTL}>
+                        {t(`entrepreneur.fields.${column}`) || column}
+                      </TableHeaderCell>
+                    ))}
+                    {isEditing && (
+                      <TableHeaderCell $isRTL={isRTL}>
+                        {t('buttons.edit') || 'Edit'}
+                      </TableHeaderCell>
+                    )}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.map((item, index) => (
+                    <TableRow key={index}>
+                      {dataColumns.map((column) => (
+                        <TableCell key={column} $isRTL={isRTL}>
+                          <div style={{ 
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '8px'
+                          }}>
+                            <div style={{ 
+                              fontSize: '14px',
+                              fontWeight: 'normal',
+                              color: '#6b7280',
+                              lineHeight: '22px',
+                              display: 'flex',
+                              height: '28px',
+                              alignItems: 'center'
+                            }}>
+                              {t(`entrepreneur.fields.${item.metric}`) || item.metric}
+                            </div>
+                            {isEditing && onFieldChange ? (
+                              <FormField
+                                fieldName={`${index}.${column}`}
+                                fieldSchema={{ type: 'integer', minimum: 0 }}
+                                value={item[column]}
+                                onChange={(fieldName, value) => {
+                                  const [rowIndex, colName] = fieldName.split('.');
+                                  const newData = [...data];
+                                  newData[parseInt(rowIndex)][colName] = value;
+                                  onFieldChange(sectionName, newData);
+                                }}
+                                isEditing={isEditing}
+                                isRTL={isRTL}
+                                t={t}
+                              />
+                            ) : (
+                              <div style={{ 
+                                color: '#111827',
+                                fontWeight: 'normal',
+                                fontSize: '18px',
+                                lineHeight: '26px',
+                                padding: '8px 0',
+                                borderBottom: '2px solid #e5e7eb',
+                                minHeight: '40px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                textAlign: isRTL ? 'right' : 'left',
+                                direction: isRTL ? 'rtl' : 'ltr'
+                              }}>
+                                {formatValue(column, item[column])}
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                      ))}
+                      {isEditing && (
+                        <TableCell $isRTL={isRTL}>
+                          <EditButton onClick={() => console.log('Edit row', index)}>
+                            ✏️
+                          </EditButton>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+        );
+      }
+      
+      // Default table layout for other sections
       return (
         <div>
           <SectionTitle>
@@ -306,7 +435,18 @@ export const renderDataSection = ({
                         <PillFieldsContainer $isRTL={isRTL} $layout="vertical">
                           {getBottomShapeFields(sectionName, schemaData)
                             .filter(key => data[key] !== undefined)
-                            .map((key) => renderPillField({ keyName: key, value: data[key], t, isRTL }))}
+                            .map((key) => {
+                              const fieldSchema = getFieldSchemaFromAllColumns(key, sectionName, schemaData);
+                              return renderPillField({ 
+                                keyName: key, 
+                                value: data[key], 
+                                t, 
+                                isRTL, 
+                                isEditing, 
+                                onFieldChange, 
+                                fieldSchema 
+                              });
+                            })}
                         </PillFieldsContainer>
                       ) : (
                         <div>
@@ -327,7 +467,17 @@ export const renderDataSection = ({
                                 return (
                                   <FieldGroup key={key} $colspan={colspan}>
                                     <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
-                                    {isTextarea ? (
+                                    {isEditing && onFieldChange ? (
+                                      <FormField
+                                        fieldName={key}
+                                        fieldSchema={fieldSchema}
+                                        value={value}
+                                        onChange={onFieldChange}
+                                        isEditing={isEditing}
+                                        isRTL={isRTL}
+                                        t={t}
+                                      />
+                                    ) : isTextarea ? (
                                       <TextareaValue $isRTL={isRTL} $rows={rows}>{String(value)}</TextareaValue>
                                     ) : (
                                       <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
@@ -342,7 +492,15 @@ export const renderDataSection = ({
                             <PillFieldsContainer $isRTL={isRTL}>
                               {Object.entries(columnProperties)
                                 .filter(([key, fieldSchema]) => (fieldSchema as any)?.shape === 'bottom' && data[key] !== undefined)
-                                .map(([key]) => renderPillField({ keyName: key, value: data[key], t, isRTL }))}
+                                .map(([key, fieldSchema]) => renderPillField({ 
+                                  keyName: key, 
+                                  value: data[key], 
+                                  t, 
+                                  isRTL, 
+                                  isEditing, 
+                                  onFieldChange, 
+                                  fieldSchema 
+                                }))}
                             </PillFieldsContainer>
                           )}
                         </div>
@@ -376,7 +534,17 @@ export const renderDataSection = ({
                   return (
                     <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName, schemaData)}>
                       <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
-                      {isTextarea ? (
+                      {isEditing && onFieldChange ? (
+                        <FormField
+                          fieldName={key}
+                          fieldSchema={{ type: isTextarea ? 'textarea' : 'string', rows }}
+                          value={value}
+                          onChange={onFieldChange}
+                          isEditing={isEditing}
+                          isRTL={isRTL}
+                          t={t}
+                        />
+                      ) : isTextarea ? (
                         <TextareaValue $isRTL={isRTL} $rows={rows}>{String(value)}</TextareaValue>
                       ) : (
                         <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
@@ -390,7 +558,18 @@ export const renderDataSection = ({
             <PillFieldsContainer $isRTL={isRTL}>
               {getBottomShapeFields(sectionName, schemaData)
                 .filter(key => data[key] !== undefined)
-                .map((key) => renderPillField({ keyName: key, value: data[key], t, isRTL }))}
+                .map((key) => {
+                  const fieldSchema = getFieldSchemaFromAllColumns(key, sectionName, schemaData);
+                  return renderPillField({ 
+                    keyName: key, 
+                    value: data[key], 
+                    t, 
+                    isRTL, 
+                    isEditing, 
+                    onFieldChange, 
+                    fieldSchema 
+                  });
+                })}
             </PillFieldsContainer>
           </DataCard>
         </DataGrid>
@@ -413,10 +592,65 @@ export const TabbedDataView: React.FC<TabbedDataViewProps> = ({
   showIcons = false,
   schemaData
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableData, setEditableData] = useState(data);
+
+  const handleFieldChange = useCallback((fieldName: string, value: any) => {
+    setEditableData((prev: any) => {
+      // Handle array updates (like financialData)
+      if (fieldName === activeTab) {
+        return {
+          ...prev,
+          [activeTab]: value
+        };
+      }
+      // Handle regular field updates
+      return {
+        ...prev,
+        [activeTab]: {
+          ...prev[activeTab],
+          [fieldName]: value
+        }
+      };
+    });
+  }, [activeTab]);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditableData(data); // Reset to original data when starting edit
+  };
+
+  const handleSave = () => {
+    console.log('Updated data:', editableData);
+    setIsEditing(false);
+    // Here you would typically send the data to your backend
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditableData(data); // Reset to original data
+  };
+
   return (
     <Container dir={isRTL ? 'rtl' : 'ltr'}>
       <PageHeader>
         <PageTitle>{title}</PageTitle>
+        <ButtonContainer $isRTL={isRTL}>
+          {!isEditing ? (
+            <EditButton onClick={handleEdit}>
+              ✏️ {t('buttons.edit') || 'Edit'}
+            </EditButton>
+          ) : (
+            <>
+              <EditButton $isEditing onClick={handleCancel}>
+                ❌ {t('buttons.cancel') || 'Cancel'}
+              </EditButton>
+              <SaveButton onClick={handleSave}>
+                💾 {t('buttons.save') || 'Save'}
+              </SaveButton>
+            </>
+          )}
+        </ButtonContainer>
       </PageHeader>
       
       <TabContainer>
@@ -438,15 +672,17 @@ export const TabbedDataView: React.FC<TabbedDataViewProps> = ({
             key={activeTab}
             {...tabAnimation}
           >
-            {data[activeTab] && renderDataSection({
+            {editableData[activeTab] && renderDataSection({
               title: tabs.find(tab => tab.key === activeTab)?.label || '',
-              data: data[activeTab],
+              data: editableData[activeTab],
               icon: tabs.find(tab => tab.key === activeTab)?.icon || '📄',
               t,
               isRTL,
               showIcons,
               sectionName: activeTab,
-              schemaData
+              schemaData,
+              isEditing,
+              onFieldChange: handleFieldChange
             })}
           </TabContent>
         </AnimatePresence>

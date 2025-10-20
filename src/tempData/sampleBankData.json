@@ -69,27 +69,41 @@
     "requiredPreSale": 40.0,
     "requiredPreTotal": 30000000
   },
-  "financialData": {
-    "appraisal": {
-      "pricePerSquareMeter": 15000,
-      "revenue": 75000000,
-      "expenses": 60000000,
-      "profit": 15000000,
-      "profitMargin": 20.0
+  "financialData": [
+    {
+      "metric": "pricePerSquareMeter",
+      "appraisal": 15000,
+      "ai": 14500,
+      "banker": 14000,
+      "comments": "מחיר למטר מרובע מבוסס על שמאות עדכניות ותחזיות שוק"
     },
-    "ai": {
-      "pricePerSquareMeter": 14500,
-      "revenue": 72500000,
-      "expenses": 58000000,
-      "profit": 14500000,
-      "profitMargin": 20.0
+    {
+      "metric": "revenue",
+      "appraisal": 75000000,
+      "ai": 72500000,
+      "banker": 70000000,
+      "comments": "הכנסות צפויות מהפרויקט על בסיס מכירות דירות"
     },
-    "banker": {
-      "pricePerSquareMeter": 14000,
-      "revenue": 70000000,
-      "expenses": 56000000,
-      "profit": 14000000,
-      "profitMargin": 20.0
+    {
+      "metric": "expenses",
+      "appraisal": 60000000,
+      "ai": 58000000,
+      "banker": 56000000,
+      "comments": "הוצאות כוללות בנייה, רישוי, שיווק ועוד"
+    },
+    {
+      "metric": "profit",
+      "appraisal": 15000000,
+      "ai": 14500000,
+      "banker": 14000000,
+      "comments": "רווח נקי צפוי מהפרויקט לאחר כל ההוצאות"
+    },
+    {
+      "metric": "profitMargin",
+      "appraisal": 20,
+      "ai": 20,
+      "banker": 20,
+      "comments": "אחוז רווח מהמחזור הכולל של הפרויקט"
     }
-  }
+  ]
 }

@@ -117,47 +117,22 @@
       "additionalProperties": false
     },
     "financialData": {
-      "type": "object",
-      "properties": {
-        "appraisal": {
-          "type": "object",
-          "properties": {
-            "pricePerSquareMeter": { "type": "integer", "minimum": 0 },
-            "revenue": { "type": "integer", "minimum": 0 },
-            "expenses": { "type": "integer", "minimum": 0 },
-            "profit": { "type": "integer" },
-            "profitMargin": { "type": "number", "minimum": 0, "maximum": 100 }
-          },
-          "required": ["pricePerSquareMeter", "revenue", "expenses", "profit", "profitMargin"],
-          "additionalProperties": false
+      "type": "array",
+      "layout": "table",
+      "items": {
+        "type": "object",
+        "properties": {
+          "metric": { "type": "string" },
+          "appraisal": { "type": "integer", "minimum": 0 },
+          "ai": { "type": "integer", "minimum": 0 },
+          "banker": { "type": "integer", "minimum": 0 },
+          "comments": { "type": "string" }
         },
-        "ai": {
-          "type": "object",
-          "properties": {
-            "pricePerSquareMeter": { "type": "integer", "minimum": 0 },
-            "revenue": { "type": "integer", "minimum": 0 },
-            "expenses": { "type": "integer", "minimum": 0 },
-            "profit": { "type": "integer" },
-            "profitMargin": { "type": "number", "minimum": 0, "maximum": 100 }
-          },
-          "required": ["pricePerSquareMeter", "revenue", "expenses", "profit", "profitMargin"],
-          "additionalProperties": false
-        },
-        "banker": {
-          "type": "object",
-          "properties": {
-            "pricePerSquareMeter": { "type": "integer", "minimum": 0 },
-            "revenue": { "type": "integer", "minimum": 0 },
-            "expenses": { "type": "integer", "minimum": 0 },
-            "profit": { "type": "integer" },
-            "profitMargin": { "type": "number", "minimum": 0, "maximum": 100 }
-          },
-          "required": ["pricePerSquareMeter", "revenue", "expenses", "profit", "profitMargin"],
-          "additionalProperties": false
-        }
+        "required": ["metric", "appraisal", "ai", "banker"],
+        "additionalProperties": false
       },
-      "required": ["appraisal", "ai", "banker"],
-      "additionalProperties": false
+      "minItems": 5,
+      "maxItems": 5
     }
   },
   "required": ["entrepreneur", "funding", "project", "financing", "fee", "creditConditions", "financialData"],

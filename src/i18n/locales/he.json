@@ -122,7 +122,10 @@
       "revenue": "הכנסות",
       "expenses": "הוצאות",
       "profit": "רווח",
-      "profitMargin": "שולי רווח (%)"
+      "profitMargin": "שולי רווח (%)",
+      "appraisal": "שמאי",
+      "ai": "בינה מלאכותית",
+      "banker": "בנקאי"
     }
   }
 }

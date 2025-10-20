@@ -13,15 +13,23 @@ export const Container = styled.div`
 `;
 
 export const PageHeader = styled.div`
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: ${theme.spacing.xl};
+  padding: 0 ${theme.spacing.md};
+  
+  @media (max-width: ${theme.breakpoints.md}) {
+    flex-direction: column;
+    gap: ${theme.spacing.md};
+  }
 `;
 
 export const PageTitle = styled.h1`
   font-size: ${theme.typography.fontSize['3xl']};
   font-weight: ${theme.typography.fontWeight.bold};
   color: ${theme.colors.gray[900]};
-  margin-bottom: ${theme.spacing.md};
+  margin: 0;
 `;
 
 // Tab Components
