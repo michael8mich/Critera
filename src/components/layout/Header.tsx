@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/theme';
 import { LanguageSwitcher } from '../common';
@@ -42,14 +43,18 @@ const NavLinks = styled.div`
   gap: ${theme.spacing.lg};
 `;
 
-const NavLink = styled.a`
-  color: ${theme.colors.gray[600]};
+const StyledLink = styled(Link)<{ $isActive?: boolean }>`
+  color: ${props => props.$isActive ? theme.colors.primary[600] : theme.colors.gray[600]};
   text-decoration: none;
   font-weight: ${theme.typography.fontWeight.medium};
   transition: color 0.2s ease-in-out;
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  border-radius: ${theme.borderRadius.md};
+  background-color: ${props => props.$isActive ? theme.colors.primary[50] : 'transparent'};
   
   &:hover {
     color: ${theme.colors.primary[600]};
+    background-color: ${theme.colors.primary[50]};
   }
 `;
 
@@ -61,6 +66,7 @@ const RightSection = styled.div`
 
 const Header: React.FC<HeaderProps> = ({ children }) => {
   const { t } = useTranslation();
+  const location = useLocation();
   
   return (
     <StyledHeader>
@@ -68,10 +74,18 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
         <Nav>
           <Logo>Critera</Logo>
           <NavLinks>
-            <NavLink href="#home">{t('nav.home')}</NavLink>
-            <NavLink href="#about">{t('nav.about')}</NavLink>
-            <NavLink href="#services">{t('nav.services')}</NavLink>
-            <NavLink href="#contact">{t('nav.contact')}</NavLink>
+            <StyledLink 
+              to="/home" 
+              $isActive={location.pathname === '/home'}
+            >
+              {t('nav.home') || 'Home'}
+            </StyledLink>
+            <StyledLink 
+              to="/entrepreneur" 
+              $isActive={location.pathname === '/entrepreneur' || location.pathname === '/'}
+            >
+              {t('nav.entrepreneur') || 'Entrepreneur'}
+            </StyledLink>
           </NavLinks>
           <RightSection>
             <LanguageSwitcher />

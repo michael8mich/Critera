@@ -8,12 +8,12 @@
       "properties": {
         "firstName": { "type": "string" },
         "lastName": { "type": "string" },
-        "role": { "type": "string" },
+        "role": { "type": "string", "colspan": 2 },
         "companyName": { "type": "string" },
         "nc": { "type": "integer" },
         "phone": { "type": "string", "pattern": "^\\+?[0-9]{7,15}$" },
         "email": { "type": "string", "format": "email" },
-        "owner": { "type": "string" },
+        "owner": { "type": "string", "colspan": 2 },
         "mortgage": { "type": "string" },
         "encumbrance": { "type": "string" }
       },

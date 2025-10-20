@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { theme } from '../../styles/theme';
 import { Card } from '../common';
 import sampleData from '../../tempData/sampleBankData.json';
+import schemaData from '../../tempData/data.json';
 
 interface EntrepreneurProps {
   data?: any;
@@ -163,10 +164,11 @@ const FieldsContainer = styled.div`
   }
 `;
 
-const FieldGroup = styled.div`
+const FieldGroup = styled.div<{ $colspan?: number }>`
   display: flex;
   flex-direction: column;
   gap: ${theme.spacing.xs};
+  grid-column: span ${({ $colspan }) => $colspan || 1};
 `;
 
 const DataLabel = styled.label<{ $isRTL: boolean }>`
@@ -314,6 +316,22 @@ const formatValue = (key: string, value: any): string => {
   return String(value);
 };
 
+// Field configuration for colspan support - read from schema
+const getFieldColspan = (key: string, sectionName: string = 'entrepreneur'): number => {
+  try {
+    const sectionSchema = schemaData.properties[sectionName as keyof typeof schemaData.properties];
+    if (sectionSchema && 'properties' in sectionSchema) {
+      const fieldSchema = sectionSchema.properties[key as keyof typeof sectionSchema.properties];
+      if (fieldSchema && typeof fieldSchema === 'object' && 'colspan' in fieldSchema) {
+        return (fieldSchema as any).colspan || 1;
+      }
+    }
+  } catch (error) {
+    console.warn(`Error reading colspan for field ${key} in section ${sectionName}:`, error);
+  }
+  return 1;
+};
+
 const isPillField = (key: string): boolean => {
   return key === 'contractorProjects' || key === 'entrepreneurProjects';
 };
@@ -327,7 +345,7 @@ const renderPillField = (key: string, value: any, t: any, isRTL: boolean) => (
   </PillField>
 );
 
-const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL: boolean, showIcons: boolean) => {
+const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL: boolean, showIcons: boolean, sectionName: string = 'entrepreneur') => {
   if (Array.isArray(data)) {
     return (
       <div>
@@ -341,7 +359,7 @@ const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL
               <SubSectionTitle>{t('entrepreneur.fields.item', { index: index + 1 }) || `פריט ${index + 1}`}</SubSectionTitle>
               <FieldsContainer>
                 {Object.entries(item).map(([key, value]) => (
-                  <FieldGroup key={key}>
+                  <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName)}>
                     <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
                     <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
                   </FieldGroup>
@@ -374,13 +392,13 @@ const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL
                 <FieldsContainer>
                   {typeof subData === 'object' && subData !== null ? (
                     Object.entries(subData).map(([key, value]) => (
-                      <FieldGroup key={key}>
+                      <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName)}>
                         <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
                         <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
                       </FieldGroup>
                     ))
                   ) : (
-                    <FieldGroup>
+                    <FieldGroup $colspan={getFieldColspan(subKey, sectionName)}>
                       <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${subKey}`) || subKey}</DataLabel>
                       <DataValue $isRTL={isRTL}>{formatValue(subKey, subData)}</DataValue>
                     </FieldGroup>
@@ -407,7 +425,7 @@ const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL
               {Object.entries(data)
                 .filter(([key]) => !isPillField(key))
                 .map(([key, value]) => (
-                  <FieldGroup key={key}>
+                  <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName)}>
                     <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
                     <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
                   </FieldGroup>
@@ -432,7 +450,7 @@ const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL
 const Entrepreneur: React.FC<EntrepreneurProps> = ({ data = sampleData }) => {
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState('entrepreneur');
-  const [showIcons, setShowIcons] = useState(false); // Option to hide/show icons
+  const [showIcons] = useState(false); // Option to hide/show icons
   const isRTL = i18n.language === 'he';
 
   const tabs = [
@@ -483,7 +501,8 @@ const Entrepreneur: React.FC<EntrepreneurProps> = ({ data = sampleData }) => {
               tabs.find(tab => tab.key === activeTab)?.icon || '📄',
               t,
               isRTL,
-              showIcons
+              showIcons,
+              activeTab
             )}
           </TabContent>
         </AnimatePresence>
