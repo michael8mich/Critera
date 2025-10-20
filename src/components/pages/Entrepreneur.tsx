@@ -200,11 +200,21 @@ const DataValue = styled.div<{ $isRTL?: boolean }>`
   }
 `;
 
+const PillFieldsContainer = styled.div<{ $isRTL?: boolean }>`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+  direction: ${({ $isRTL }) => $isRTL ? 'rtl' : 'ltr'};
+`;
+
 const PillField = styled.div<{ $isRTL?: boolean }>`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 12px;
+  align-items: ${({ $isRTL }) => $isRTL ? 'flex-end' : 'flex-start'};
 `;
 
 const PillLabel = styled.div<{ $isRTL?: boolean }>`
@@ -212,26 +222,37 @@ const PillLabel = styled.div<{ $isRTL?: boolean }>`
   line-height: 22px;
   color: ${theme.colors.gray[700]};
   text-align: ${({ $isRTL }) => $isRTL ? 'right' : 'left'};
+  direction: ${({ $isRTL }) => $isRTL ? 'rtl' : 'ltr'};
+  width: 100%;
 `;
 
-const PillContainer = styled.div`
+const PillContainer = styled.div<{ $isRTL?: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: center;
+  width: 100%;
 `;
 
-const PillValue = styled.div`
+const PillValue = styled.div<{ $isRTL?: boolean }>`
   display: flex;
-  align-items: center;
+  width: 180px;
+  height: 44px;
+  padding: 6px;
   justify-content: center;
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
+  align-items: center;
   border-radius: 50px;
-  padding: 8px 24px;
-  min-width: 60px;
-  font-size: 18px;
-  font-weight: ${theme.typography.fontWeight.medium};
-  color: ${theme.colors.gray[900]};
+  border: 2px solid #6A7784;
+  background: #FFF;
+  box-shadow: 0 2px 4px 0 rgba(64, 80, 97, 0.18);
+  color: #566473;
+  text-align: center;
+  font-family: "Noto Sans Hebrew", sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+  font-feature-settings: 'liga' off, 'clig' off;
+  margin-left: ${({ $isRTL }) => $isRTL ? 'auto' : '0'};
+  margin-right: ${({ $isRTL }) => $isRTL ? '0' : 'auto'};
 `;
 
 const SubSectionTitle = styled.h3`
@@ -300,18 +321,18 @@ const isPillField = (key: string): boolean => {
 const renderPillField = (key: string, value: any, t: any, isRTL: boolean) => (
   <PillField key={key} $isRTL={isRTL}>
     <PillLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</PillLabel>
-    <PillContainer>
-      <PillValue>{value}</PillValue>
+    <PillContainer $isRTL={isRTL}>
+      <PillValue $isRTL={isRTL}>{value}</PillValue>
     </PillContainer>
   </PillField>
 );
 
-const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL: boolean) => {
+const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL: boolean, showIcons: boolean) => {
   if (Array.isArray(data)) {
     return (
       <div>
         <SectionTitle>
-          <SectionIcon>{icon}</SectionIcon>
+          {showIcons && <SectionIcon>{icon}</SectionIcon>}
           {title}
         </SectionTitle>
         <ArrayContainer>
@@ -343,7 +364,7 @@ const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL
       return (
         <div>
           <SectionTitle>
-            <SectionIcon>{icon}</SectionIcon>
+            {showIcons && <SectionIcon>{icon}</SectionIcon>}
             {title}
           </SectionTitle>
           <DataGrid>
@@ -376,17 +397,12 @@ const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL
     return (
       <div>
         <SectionTitle>
-          <SectionIcon>{icon}</SectionIcon>
+          {showIcons && <SectionIcon>{icon}</SectionIcon>}
           {title}
         </SectionTitle>
         <DataGrid>
           <DataCard>
-            {/* Render pill fields first */}
-            {Object.entries(data)
-              .filter(([key]) => isPillField(key))
-              .map(([key, value]) => renderPillField(key, value, t, isRTL))}
-            
-            {/* Render regular fields */}
+            {/* Render regular fields first */}
             <FieldsContainer>
               {Object.entries(data)
                 .filter(([key]) => !isPillField(key))
@@ -397,6 +413,13 @@ const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL
                   </FieldGroup>
                 ))}
             </FieldsContainer>
+            
+            {/* Render pill fields at the bottom in 2 columns */}
+            <PillFieldsContainer $isRTL={isRTL}>
+              {Object.entries(data)
+                .filter(([key]) => isPillField(key))
+                .map(([key, value]) => renderPillField(key, value, t, isRTL))}
+            </PillFieldsContainer>
           </DataCard>
         </DataGrid>
       </div>
@@ -409,6 +432,7 @@ const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL
 const Entrepreneur: React.FC<EntrepreneurProps> = ({ data = sampleData }) => {
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState('entrepreneur');
+  const [showIcons, setShowIcons] = useState(false); // Option to hide/show icons
   const isRTL = i18n.language === 'he';
 
   const tabs = [
@@ -442,6 +466,7 @@ const Entrepreneur: React.FC<EntrepreneurProps> = ({ data = sampleData }) => {
               isActive={activeTab === tab.key}
               onClick={() => setActiveTab(tab.key)}
             >
+              {showIcons && <span>{tab.icon}</span>}
               {tab.label}
             </TabButton>
           ))}
@@ -457,7 +482,8 @@ const Entrepreneur: React.FC<EntrepreneurProps> = ({ data = sampleData }) => {
               data[activeTab],
               tabs.find(tab => tab.key === activeTab)?.icon || '📄',
               t,
-              isRTL
+              isRTL,
+              showIcons
             )}
           </TabContent>
         </AnimatePresence>
