@@ -190,12 +190,18 @@ export const ColumnsContainer = styled.div`
   }
 `;
 
-export const ColumnContainer = styled.div<{ $width?: string; $height?: string; $hasTextarea?: boolean }>`
+export const ColumnContainer = styled.div<{ $width?: string; $height?: string; $hasTextarea?: boolean; $layout?: string }>`
   flex: ${({ $width }) => $width === 'auto' ? '1' : '0 0 ' + $width};
   min-width: 0;
   width: ${({ $width }) => $width || 'auto'};
   height: ${({ $height }) => $height || 'auto'};
-  padding: ${({ $hasTextarea }) => $hasTextarea ? '20px' : '0'};
+  padding: ${({ $hasTextarea, $layout }) => {
+    if ($layout === 'rank') return '20px';
+    return $hasTextarea ? '20px' : '0';
+  }};
+  display: ${({ $layout }) => $layout === 'rank' ? 'flex' : 'block'};
+  flex-direction: ${({ $layout }) => $layout === 'rank' ? 'column' : 'row'};
+  justify-content: ${({ $layout }) => $layout === 'rank' ? 'center' : 'flex-start'};
   
   @media (max-width: ${theme.breakpoints.md}) {
     flex: 1;
@@ -224,6 +230,50 @@ export const ArrayContainer = styled.div`
   align-self: stretch;
   flex-direction: column;
   gap: ${theme.spacing.md};
+`;
+
+export const TableContainer = styled.div`
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid ${theme.colors.gray[200]};
+`;
+
+export const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+`;
+
+export const TableHeader = styled.thead`
+  background: ${theme.colors.gray[50]};
+`;
+
+export const TableHeaderCell = styled.th<{ $isRTL?: boolean }>`
+  padding: ${theme.spacing.md};
+  text-align: ${({ $isRTL }) => $isRTL ? 'right' : 'left'};
+  font-weight: ${theme.typography.fontWeight.semibold};
+  color: ${theme.colors.gray[700]};
+  border-bottom: 1px solid ${theme.colors.gray[200]};
+  font-size: 14px;
+`;
+
+export const TableBody = styled.tbody``;
+
+export const TableRow = styled.tr`
+  &:hover {
+    background: ${theme.colors.gray[50]};
+  }
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid ${theme.colors.gray[100]};
+  }
+`;
+
+export const TableCell = styled.td<{ $isRTL?: boolean }>`
+  padding: ${theme.spacing.md};
+  text-align: ${({ $isRTL }) => $isRTL ? 'right' : 'left'};
+  color: ${theme.colors.gray[900]};
+  font-size: 14px;
 `;
 
 // Form and Data Components
@@ -259,14 +309,21 @@ export const DataValue = styled.div<{ $isRTL?: boolean }>`
 `;
 
 // Pill Components (for special fields)
-export const PillFieldsContainer = styled.div<{ $isRTL?: boolean }>`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+export const PillFieldsContainer = styled.div<{ $isRTL?: boolean; $layout?: string }>`
+  display: ${({ $layout }) => $layout === 'vertical' ? 'flex' : 'grid'};
+  grid-template-columns: ${({ $layout }) => $layout === 'vertical' ? 'none' : '1fr 1fr'};
+  flex-direction: ${({ $layout }) => $layout === 'vertical' ? 'column' : 'row'};
   gap: 24px;
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid #e5e7eb;
+  margin-top: ${({ $layout }) => $layout === 'vertical' ? '0' : '24px'};
+  padding-top: ${({ $layout }) => $layout === 'vertical' ? '0' : '24px'};
+  border-top: ${({ $layout }) => $layout === 'vertical' ? 'none' : '1px solid #e5e7eb'};
   direction: ${({ $isRTL }) => $isRTL ? 'rtl' : 'ltr'};
+  align-items: ${({ $layout }) => $layout === 'vertical' ? 'center' : 'unset'};
+  
+  @media (max-width: ${theme.breakpoints.md}) {
+    grid-template-columns: ${({ $layout }) => $layout === 'vertical' ? 'none' : '1fr'};
+    gap: 16px;
+  }
 `;
 
 export const PillField = styled.div<{ $isRTL?: boolean }>`

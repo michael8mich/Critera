@@ -98,7 +98,95 @@ export const getFieldRows = (key: string, sectionName: string = 'entrepreneur', 
   return undefined;
 };
 
-export const isPillField = (key: string): boolean => {
+// Check if array should use table layout
+export const isTableLayout = (sectionName: string, schemaData?: any): boolean => {
+  try {
+    if (!schemaData) return false;
+    
+    const sectionSchema = schemaData.properties[sectionName as keyof typeof schemaData.properties];
+    if (sectionSchema && typeof sectionSchema === 'object') {
+      return (sectionSchema as any).layout === 'table';
+    }
+  } catch (error) {
+    console.warn(`Error checking table layout for section ${sectionName}:`, error);
+  }
+  return false;
+};
+
+// Check if field has bottom shape positioning
+export const isBottomShapeField = (key: string, sectionName: string = 'entrepreneur', schemaData?: any): boolean => {
+  try {
+    if (!schemaData) return false;
+    
+    // Check if using columns layout
+    const sectionSchema = schemaData.properties[sectionName as keyof typeof schemaData.properties];
+    if (sectionSchema && 'properties' in sectionSchema && sectionSchema.properties.columns) {
+      const columns = sectionSchema.properties.columns as any[];
+      for (const column of columns) {
+        if (column.properties && column.properties[key]) {
+          return column.properties[key].shape === 'bottom';
+        }
+      }
+    }
+    
+    // Check regular properties
+    if (sectionSchema && 'properties' in sectionSchema) {
+      const fieldSchema = sectionSchema.properties[key as keyof typeof sectionSchema.properties];
+      if (fieldSchema && typeof fieldSchema === 'object') {
+        return (fieldSchema as any).shape === 'bottom';
+      }
+    }
+  } catch (error) {
+    console.warn(`Error checking bottom shape for field ${key} in section ${sectionName}:`, error);
+  }
+  return false;
+};
+
+// Get all bottom shape fields for a section
+export const getBottomShapeFields = (sectionName: string, schemaData?: any): string[] => {
+  try {
+    if (!schemaData) return [];
+    
+    const bottomFields: string[] = [];
+    const sectionSchema = schemaData.properties[sectionName as keyof typeof schemaData.properties];
+    
+    if (sectionSchema && 'properties' in sectionSchema) {
+      // Check if using columns layout
+      if (sectionSchema.properties.columns) {
+        const columns = sectionSchema.properties.columns as any[];
+        for (const column of columns) {
+          if (column.properties) {
+            Object.entries(column.properties).forEach(([key, fieldSchema]) => {
+              if (fieldSchema && typeof fieldSchema === 'object' && (fieldSchema as any).shape === 'bottom') {
+                bottomFields.push(key);
+              }
+            });
+          }
+        }
+      } else {
+        // Check regular properties
+        Object.entries(sectionSchema.properties).forEach(([key, fieldSchema]) => {
+          if (fieldSchema && typeof fieldSchema === 'object' && (fieldSchema as any).shape === 'bottom') {
+            bottomFields.push(key);
+          }
+        });
+      }
+    }
+    
+    return bottomFields;
+  } catch (error) {
+    console.warn(`Error getting bottom shape fields for section ${sectionName}:`, error);
+  }
+  return [];
+};
+
+export const isPillField = (key: string, sectionName: string = 'entrepreneur', schemaData?: any): boolean => {
+  // Use dynamic shape detection if schema is available
+  if (schemaData) {
+    return isBottomShapeField(key, sectionName, schemaData);
+  }
+  
+  // Fallback to hardcoded fields if no schema
   return key === 'contractorProjects' || key === 'entrepreneurProjects';
 };
 

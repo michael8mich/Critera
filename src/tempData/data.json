@@ -18,10 +18,12 @@
           "email": { "type": "string", "format": "email" },
           "owner": { "type": "string", "colspan": 2 },
           "mortgage": { "type": "string" },
-          "encumbrance": { "type": "string" }
+          "encumbrance": { "type": "string" },
+          "contractorProjects": { "type": "integer", "shape":"bottom" },
+          "entrepreneurProjects": { "type": "integer", "shape":"bottom" }
           }, 
           "width": "50%"
-        }, 
+        },
         {
           "properties": {
           "externalData": { "type": "textarea","colspan": 2, "rows": 15  }
@@ -39,8 +41,8 @@
       "properties": {
         "fundingType": { "type": "string" },
         "previousFunders": { "type": "string" },
-        "numProjectsAsContractor": { "type": "integer", "minimum": 0 },
-        "numProjectsAsEntrepreneur": { "type": "integer", "minimum": 0 }
+        "numProjectsAsContractor": { "type": "button", "shape":"bottom", "minimum": 0 },
+        "numProjectsAsEntrepreneur": { "type": "button", "shape":"bottom", "minimum": 0 }
       },
       "required": ["fundingType", "previousFunders", "numProjectsAsContractor", "numProjectsAsEntrepreneur"],
       "additionalProperties": false
@@ -90,6 +92,7 @@
     },
     "fee": {
       "type": "array",
+      "layout": "table",
       "items": {
         "type": "object",
         "properties": {
