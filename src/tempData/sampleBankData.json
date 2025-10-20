@@ -10,6 +10,7 @@
     "owner": "יוסי כהן",
     "mortgage": "כן",
     "encumbrance": "לא",
+    "externalData": "זהו תוכן שדה נתונים חיצוניים. הוא יכול להכיל מספר שורות של מידע ופרטים נוספים על היזם או הפרויקט. ניתן להוסיף כאן הערות, הסברים נוספים או כל מידע רלוונטי אחר.",
     "contractorProjects": 15,
     "entrepreneurProjects": 8
   },
@@ -49,6 +50,13 @@
     "SeniorDebtInterest": 6.2
   },
   "fee": [
+    {
+      "ArrangementAndSetupFee": 250000,
+      "legalExpenses": 75000,
+      "creditManagementFees": 1.5,
+      "saleLawGuaranteeFee": 0.8,
+      "performanceGuaranteeFee": 1.2
+    },
     {
       "ArrangementAndSetupFee": 250000,
       "legalExpenses": 75000,

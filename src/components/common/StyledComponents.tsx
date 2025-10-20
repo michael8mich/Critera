@@ -173,6 +173,35 @@ export const FieldsContainer = styled.div`
   @media (min-width: ${theme.breakpoints.md}) {
     grid-template-columns: repeat(2, 1fr);
   }
+  
+  @media (max-width: ${theme.breakpoints.md}) {
+    grid-template-columns: 1fr;
+    gap: ${theme.spacing.md};
+  }
+`;
+
+export const ColumnsContainer = styled.div`
+  display: flex;
+  gap: 24px;
+  
+  @media (max-width: ${theme.breakpoints.md}) {
+    flex-direction: column;
+    gap: ${theme.spacing.lg};
+  }
+`;
+
+export const ColumnContainer = styled.div<{ $width?: string; $height?: string; $hasTextarea?: boolean }>`
+  flex: ${({ $width }) => $width === 'auto' ? '1' : '0 0 ' + $width};
+  min-width: 0;
+  width: ${({ $width }) => $width || 'auto'};
+  height: ${({ $height }) => $height || 'auto'};
+  padding: ${({ $hasTextarea }) => $hasTextarea ? '20px' : '0'};
+  
+  @media (max-width: ${theme.breakpoints.md}) {
+    flex: 1;
+    width: 100%;
+    padding: 0;
+  }
 `;
 
 export const FieldGroup = styled.div<{ $colspan?: number }>`
@@ -180,6 +209,10 @@ export const FieldGroup = styled.div<{ $colspan?: number }>`
   flex-direction: column;
   gap: ${theme.spacing.xs};
   grid-column: span ${({ $colspan }) => $colspan || 1};
+  
+  @media (max-width: ${theme.breakpoints.md}) {
+    grid-column: span 1;
+  }
 `;
 
 export const ArrayContainer = styled.div`
@@ -279,4 +312,28 @@ export const PillValue = styled.div<{ $isRTL?: boolean }>`
   font-feature-settings: 'liga' off, 'clig' off;
   margin-left: ${({ $isRTL }) => $isRTL ? 'auto' : '0'};
   margin-right: ${({ $isRTL }) => $isRTL ? '0' : 'auto'};
+`;
+
+// Textarea component for large text fields
+export const TextareaValue = styled.div<{ $isRTL?: boolean; $rows?: number }>`
+  color: ${theme.colors.gray[900]};
+  font-weight: ${theme.typography.fontWeight.normal};
+  font-size: 16px;
+  line-height: 22px;
+  padding: 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 20px;
+  min-height: ${({ $rows }) => $rows ? `${$rows * 22 + 40}px` : '120px'};
+  max-height: ${({ $rows }) => $rows ? `${$rows * 22 + 40}px` : '340px'};
+  overflow-y: auto;
+  background: #f9fafb;
+  text-align: ${({ $isRTL }) => $isRTL ? 'right' : 'left'};
+  direction: ${({ $isRTL }) => $isRTL ? 'rtl' : 'ltr'};
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  
+  &:hover {
+    border-color: #6366f1;
+    background: #f8fafc;
+  }
 `;

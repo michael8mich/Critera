@@ -79,6 +79,7 @@
       "owner": "Owner",
       "mortgage": "Mortgage",
       "encumbrance": "Encumbrance",
+      "externalData": "External Data",
       "contractorProjects": "Number of Projects Completed as Contractor",
       "entrepreneurProjects": "Number of Projects Completed as Entrepreneur Today",
       "fundingType": "Funding Type",

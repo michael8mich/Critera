@@ -22,9 +22,50 @@ import {
   PillField,
   PillLabel,
   PillContainer,
-  PillValue
+  PillValue,
+  TextareaValue,
+  ColumnsContainer,
+  ColumnContainer
 } from './StyledComponents';
-import { formatValue, getFieldColspan, isPillField, tabAnimation } from './DataFormatters';
+import { formatValue, getFieldColspan, isPillField, isTextareaField, getFieldRows, tabAnimation } from './DataFormatters';
+
+// Helper function to check if schema defines columns layout
+const hasColumnsLayout = (sectionName: string, schemaData?: any): boolean => {
+  try {
+    if (!schemaData) return false;
+    const sectionSchema = schemaData.properties[sectionName as keyof typeof schemaData.properties];
+    if (sectionSchema && 'properties' in sectionSchema && sectionSchema.properties.columns) {
+      return Array.isArray(sectionSchema.properties.columns);
+    }
+  } catch (error) {
+    console.warn(`Error checking columns layout for section ${sectionName}:`, error);
+  }
+  return false;
+};
+
+// Helper function to get columns from schema
+const getColumnsFromSchema = (sectionName: string, schemaData?: any): any[] => {
+  try {
+    if (!schemaData) return [];
+    const sectionSchema = schemaData.properties[sectionName as keyof typeof schemaData.properties];
+    if (sectionSchema && 'properties' in sectionSchema && sectionSchema.properties.columns) {
+      return sectionSchema.properties.columns as any[];
+    }
+  } catch (error) {
+    console.warn(`Error getting columns for section ${sectionName}:`, error);
+  }
+  return [];
+};
+
+// Helper function to get column width from schema
+const getColumnWidth = (column: any): string => {
+  return column.width || 'auto';
+};
+
+// Helper function to get column height from schema
+const getColumnHeight = (column: any): string => {
+  return column.height || 'auto';
+};
 
 // Interface for tab configuration
 export interface TabConfig {
@@ -99,12 +140,20 @@ export const renderDataSection = ({
             <DataCard key={index}>
               <SubSectionTitle>{t('entrepreneur.fields.item', { index: index + 1 }) || `פריט ${index + 1}`}</SubSectionTitle>
               <FieldsContainer>
-                {Object.entries(item).map(([key, value]) => (
-                  <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName, schemaData)}>
-                    <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
-                    <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
-                  </FieldGroup>
-                ))}
+                {Object.entries(item).map(([key, value]) => {
+                  const isTextarea = isTextareaField(key, sectionName, schemaData);
+                  const rows = isTextarea ? getFieldRows(key, sectionName, schemaData) : undefined;
+                  return (
+                    <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName, schemaData)}>
+                      <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
+                      {isTextarea ? (
+                        <TextareaValue $isRTL={isRTL} $rows={rows}>{String(value)}</TextareaValue>
+                      ) : (
+                        <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
+                      )}
+                    </FieldGroup>
+                  );
+                })}
               </FieldsContainer>
             </DataCard>
           ))}
@@ -132,16 +181,28 @@ export const renderDataSection = ({
                 <SubSectionTitle>{subKey}</SubSectionTitle>
                 <FieldsContainer>
                   {typeof subData === 'object' && subData !== null ? (
-                    Object.entries(subData).map(([key, value]) => (
-                      <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName, schemaData)}>
-                        <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
-                        <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
-                      </FieldGroup>
-                    ))
+                    Object.entries(subData).map(([key, value]) => {
+                      const isTextarea = isTextareaField(key, sectionName, schemaData);
+                      const rows = isTextarea ? getFieldRows(key, sectionName, schemaData) : undefined;
+                      return (
+                        <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName, schemaData)}>
+                          <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
+                          {isTextarea ? (
+                            <TextareaValue $isRTL={isRTL} $rows={rows}>{String(value)}</TextareaValue>
+                          ) : (
+                            <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
+                          )}
+                        </FieldGroup>
+                      );
+                    })
                   ) : (
                     <FieldGroup $colspan={getFieldColspan(subKey, sectionName, schemaData)}>
                       <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${subKey}`) || subKey}</DataLabel>
-                      <DataValue $isRTL={isRTL}>{formatValue(subKey, subData)}</DataValue>
+                      {isTextareaField(subKey, sectionName, schemaData) ? (
+                        <TextareaValue $isRTL={isRTL} $rows={getFieldRows(subKey, sectionName, schemaData)}>{String(subData)}</TextareaValue>
+                      ) : (
+                        <DataValue $isRTL={isRTL}>{formatValue(subKey, subData)}</DataValue>
+                      )}
                     </FieldGroup>
                   )}
                 </FieldsContainer>
@@ -153,6 +214,75 @@ export const renderDataSection = ({
     }
 
     // Simple object
+    // Check if this section uses columns layout
+    if (hasColumnsLayout(sectionName, schemaData)) {
+      const columns = getColumnsFromSchema(sectionName, schemaData);
+      
+      return (
+        <div>
+          <SectionTitle>
+            {showIcons && <SectionIcon>{icon}</SectionIcon>}
+            {title}
+          </SectionTitle>
+          <DataGrid>
+            <DataCard>
+              <ColumnsContainer>
+                {columns.map((column, columnIndex) => {
+                  const columnWidth = getColumnWidth(column);
+                  const columnHeight = getColumnHeight(column);
+                  const columnProperties = column.properties || {};
+                  
+                  // Check if this column contains any textarea fields
+                  const hasTextarea = Object.values(columnProperties).some(
+                    (fieldSchema: any) => fieldSchema?.type === 'textarea'
+                  );
+                  
+                  return (
+                    <ColumnContainer 
+                      key={columnIndex} 
+                      $width={columnWidth} 
+                      $height={columnHeight}
+                      $hasTextarea={hasTextarea}
+                    >
+                      <FieldsContainer>
+                        {Object.entries(columnProperties)
+                          .filter(([key]) => !isPillField(key) && data[key] !== undefined)
+                          .map(([key, fieldSchema]) => {
+                            const value = data[key];
+                            const isTextarea = (fieldSchema as any)?.type === 'textarea';
+                            const colspan = (fieldSchema as any)?.colspan || 1;
+                            const rows = (fieldSchema as any)?.rows;
+                            
+                            return (
+                              <FieldGroup key={key} $colspan={colspan}>
+                                <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
+                                {isTextarea ? (
+                                  <TextareaValue $isRTL={isRTL} $rows={rows}>{String(value)}</TextareaValue>
+                                ) : (
+                                  <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
+                                )}
+                              </FieldGroup>
+                            );
+                          })}
+                      </FieldsContainer>
+                    </ColumnContainer>
+                  );
+                })}
+              </ColumnsContainer>
+              
+              {/* Render pill fields at the bottom in 2 columns */}
+              <PillFieldsContainer $isRTL={isRTL}>
+                {Object.entries(data)
+                  .filter(([key]) => isPillField(key))
+                  .map(([key, value]) => renderPillField({ keyName: key, value, t, isRTL }))}
+              </PillFieldsContainer>
+            </DataCard>
+          </DataGrid>
+        </div>
+      );
+    }
+
+    // Default single column layout
     return (
       <div>
         <SectionTitle>
@@ -165,12 +295,20 @@ export const renderDataSection = ({
             <FieldsContainer>
               {Object.entries(data)
                 .filter(([key]) => !isPillField(key))
-                .map(([key, value]) => (
-                  <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName, schemaData)}>
-                    <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
-                    <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
-                  </FieldGroup>
-                ))}
+                .map(([key, value]) => {
+                  const isTextarea = isTextareaField(key, sectionName, schemaData);
+                  const rows = isTextarea ? getFieldRows(key, sectionName, schemaData) : undefined;
+                  return (
+                    <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName, schemaData)}>
+                      <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
+                      {isTextarea ? (
+                        <TextareaValue $isRTL={isRTL} $rows={rows}>{String(value)}</TextareaValue>
+                      ) : (
+                        <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
+                      )}
+                    </FieldGroup>
+                  );
+                })}
             </FieldsContainer>
             
             {/* Render pill fields at the bottom in 2 columns */}

@@ -81,10 +81,6 @@ const LanguageOption = styled.button<{ isActive: boolean; isRtl: boolean }>`
   }
 `;
 
-const FlagIcon = styled.span`
-  font-size: 16px;
-`;
-
 const ChevronIcon = styled.span<{ isOpen: boolean }>`
   transform: ${({ isOpen }) => isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
   transition: transform 0.2s ease-in-out;
@@ -140,7 +136,6 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className }) => {
         isRtl={isRtl}
         aria-label={t('nav.language')}
       >
-        <FlagIcon>{currentLanguage.flag}</FlagIcon>
         <span>{currentLanguage.name}</span>
         <ChevronIcon isOpen={isOpen}>▼</ChevronIcon>
       </LanguageButton>
@@ -153,9 +148,6 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className }) => {
             isActive={language.code === i18n.language}
             isRtl={language.isRtl}
           >
-            <FlagIcon style={{ marginRight: language.isRtl ? '0' : '8px', marginLeft: language.isRtl ? '8px' : '0' }}>
-              {language.flag}
-            </FlagIcon>
             {language.name}
           </LanguageOption>
         ))}

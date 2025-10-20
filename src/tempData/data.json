@@ -6,16 +6,30 @@
     "entrepreneur": {
       "type": "object",
       "properties": {
-        "firstName": { "type": "string" },
-        "lastName": { "type": "string" },
-        "role": { "type": "string", "colspan": 2 },
-        "companyName": { "type": "string" },
-        "nc": { "type": "integer" },
-        "phone": { "type": "string", "pattern": "^\\+?[0-9]{7,15}$" },
-        "email": { "type": "string", "format": "email" },
-        "owner": { "type": "string", "colspan": 2 },
-        "mortgage": { "type": "string" },
-        "encumbrance": { "type": "string" }
+        "columns": [ 
+        {
+          "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "role": { "type": "string", "colspan": 2 },
+          "companyName": { "type": "string" },
+          "nc": { "type": "integer" },
+          "phone": { "type": "string", "pattern": "^\\+?[0-9]{7,15}$" },
+          "email": { "type": "string", "format": "email" },
+          "owner": { "type": "string", "colspan": 2 },
+          "mortgage": { "type": "string" },
+          "encumbrance": { "type": "string" }
+          }, 
+          "width": "50%"
+        }, 
+        {
+          "properties": {
+          "externalData": { "type": "textarea","colspan": 2, "rows": 15  }
+          },
+          "width": "50%"
+          
+        }
+        ]
       },
       "required": ["firstName", "lastName", "role", "companyName", "nc", "phone", "email", "owner", "mortgage", "encumbrance"],
       "additionalProperties": false
