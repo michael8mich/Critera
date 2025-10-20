@@ -78,6 +78,8 @@
       "owner": "בעלים",
       "mortgage": "משכנתא",
       "encumbrance": "עיקול",
+      "contractorProjects": "מספר הפרויקטים שהושלמו כקבלן מבצע",
+      "entrepreneurProjects": "מספר הפרויקטים שהושלמו כיזם כיום",
       "fundingType": "סוג מימון",
       "previousFunders": "ממנים קודמים",
       "numProjectsAsContractor": "פרויקטים כקבלן",

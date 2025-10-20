@@ -200,6 +200,40 @@ const DataValue = styled.div<{ $isRTL?: boolean }>`
   }
 `;
 
+const PillField = styled.div<{ $isRTL?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+`;
+
+const PillLabel = styled.div<{ $isRTL?: boolean }>`
+  font-size: 14px;
+  line-height: 22px;
+  color: ${theme.colors.gray[700]};
+  text-align: ${({ $isRTL }) => $isRTL ? 'right' : 'left'};
+`;
+
+const PillContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const PillValue = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 50px;
+  padding: 8px 24px;
+  min-width: 60px;
+  font-size: 18px;
+  font-weight: ${theme.typography.fontWeight.medium};
+  color: ${theme.colors.gray[900]};
+`;
+
 const SubSectionTitle = styled.h3`
   font-size: ${theme.typography.fontSize.lg};
   font-weight: ${theme.typography.fontWeight.semibold};
@@ -258,6 +292,19 @@ const formatValue = (key: string, value: any): string => {
   }
   return String(value);
 };
+
+const isPillField = (key: string): boolean => {
+  return key === 'contractorProjects' || key === 'entrepreneurProjects';
+};
+
+const renderPillField = (key: string, value: any, t: any, isRTL: boolean) => (
+  <PillField key={key} $isRTL={isRTL}>
+    <PillLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</PillLabel>
+    <PillContainer>
+      <PillValue>{value}</PillValue>
+    </PillContainer>
+  </PillField>
+);
 
 const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL: boolean) => {
   if (Array.isArray(data)) {
@@ -334,13 +381,21 @@ const renderDataSection = (title: string, data: any, icon: string, t: any, isRTL
         </SectionTitle>
         <DataGrid>
           <DataCard>
+            {/* Render pill fields first */}
+            {Object.entries(data)
+              .filter(([key]) => isPillField(key))
+              .map(([key, value]) => renderPillField(key, value, t, isRTL))}
+            
+            {/* Render regular fields */}
             <FieldsContainer>
-              {Object.entries(data).map(([key, value]) => (
-                <FieldGroup key={key}>
-                  <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
-                  <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
-                </FieldGroup>
-              ))}
+              {Object.entries(data)
+                .filter(([key]) => !isPillField(key))
+                .map(([key, value]) => (
+                  <FieldGroup key={key}>
+                    <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
+                    <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
+                  </FieldGroup>
+                ))}
             </FieldsContainer>
           </DataCard>
         </DataGrid>
