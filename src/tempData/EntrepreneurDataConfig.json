@@ -65,9 +65,20 @@
         "parkingType": { "type": "string" },
         "parkingCount": { "type": "integer", "minimum": 0 },
         "appraisalReport": {
-          "type": "string",
-          "contentEncoding": "base64",
-          "contentMediaType": "application/octet-stream"
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "filename": { "type": "string" },
+              "data": {
+                "type": "string",
+                "contentEncoding": "base64",
+                "contentMediaType": "application/octet-stream"
+              }
+            },
+            "required": ["filename", "data"]
+          },
+          "minItems": 0
         }
       },
       "required": ["type", "city", "street", "number", "block", "parcel", "officialStatus", "plannedStatus", "ownersAppartements", "sellingAppartements", "soldAppartements", "totalSales", "parkingType", "parkingCount", "appraisalReport"],
@@ -110,6 +121,22 @@
     "creditConditions": {
       "type": "object",
       "properties": {
+        "columns": [ 
+        {
+          "properties": {
+          "requiredPreSale": { "type": "number", "minimum": 0, "maximum": 100 },
+          "requiredPreTotal": { "type": "integer", "minimum": 0 }
+          }, 
+          "width": "50%"
+        },
+        {
+          "properties": {
+          "notes": { "type": "textarea","colspan": 2, "rows": 10  }
+          },
+          "width": "50%"
+         
+        }
+        ],
         "requiredPreSale": { "type": "number", "minimum": 0, "maximum": 100 },
         "requiredPreTotal": { "type": "integer", "minimum": 0 }
       },
@@ -125,8 +152,8 @@
           "metric": { "type": "string" },
           "appraisal": { "type": "integer", "minimum": 0 },
           "ai": { "type": "integer", "minimum": 0 },
-          "banker": { "type": "integer", "minimum": 0 },
-          "comments": { "type": "string" }
+          "banker": { "type": "integer", "minimum": 0, "editable": true },
+          "comments": { "type": "textarea", "rows": 2, "editable": true }
         },
         "required": ["metric", "appraisal", "ai", "banker"],
         "additionalProperties": false

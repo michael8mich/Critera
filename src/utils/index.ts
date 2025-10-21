@@ -11,6 +11,63 @@ export const STORAGE_KEYS = {
   THEME: 'app_theme',
 };
 
+// PDF handling utilities
+export const downloadPDF = (base64Data: string, filename: string = 'document.pdf') => {
+  try {
+    // Convert base64 to blob
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'application/pdf' });
+    
+    // Create download link
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    
+    // Cleanup
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error downloading PDF:', error);
+  }
+};
+
+export const openPDFInNewWindow = (base64Data: string, filename: string = 'document.pdf') => {
+  try {
+    // Convert base64 to blob
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'application/pdf' });
+    
+    // Open in new window
+    const url = URL.createObjectURL(blob);
+    const newWindow = window.open(url, '_blank');
+    
+    if (!newWindow) {
+      // Fallback to download if popup blocked
+      downloadPDF(base64Data, filename);
+    }
+    
+    // Cleanup after a delay to allow window to load
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
+  } catch (error) {
+    console.error('Error opening PDF:', error);
+  }
+};
+
 // Format currency
 export const formatCurrency = (amount: number, currency = 'USD'): string => {
   return new Intl.NumberFormat('en-US', {

@@ -34,8 +34,8 @@ import {
   TableRow,
   TableCell
 } from './StyledComponents';
-import { FormField, EditButton, SaveButton, ButtonContainer } from './FormComponents';
-import { formatValue, getFieldColspan, isPillField, isTextareaField, getFieldRows, isTableLayout, getBottomShapeFields, tabAnimation } from './DataFormatters';
+import { FormField, EditButton, SaveButton, ClearButton, ButtonContainer, PDFField, PDFListField } from './FormComponents';
+import { formatValue, getFieldColspan, isPillField, isTextareaField, getFieldRows, isTableLayout, getBottomShapeFields, tabAnimation, isPDFField } from './DataFormatters';
 
 // Helper function to check if schema defines columns layout
 const hasColumnsLayout = (sectionName: string, schemaData?: any): boolean => {
@@ -66,6 +66,7 @@ const getColumnsFromSchema = (sectionName: string, schemaData?: any): any[] => {
 };
 
 // Helper function to check if any column has rank layout
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const hasRankColumn = (sectionName: string, schemaData?: any): boolean => {
   const columns = getColumnsFromSchema(sectionName, schemaData);
   return columns.some(column => column.layout === 'rank');
@@ -80,6 +81,19 @@ const getFieldSchemaFromAllColumns = (fieldName: string, sectionName: string, sc
     }
   }
   return { type: 'string' }; // fallback
+};
+
+// Helper function to get field schema from array items (for financialData)
+const getArrayFieldSchema = (fieldName: string, sectionName: string, schemaData?: any): any => {
+  if (!schemaData) return { type: 'string' };
+  
+  const sectionSchema = schemaData.properties[sectionName as keyof typeof schemaData.properties];
+  if (sectionSchema?.type === 'array' && sectionSchema.items?.properties) {
+    const fieldSchema = sectionSchema.items.properties[fieldName];
+    return fieldSchema || { type: 'string' };
+  }
+  
+  return { type: 'string' };
 };
 
 // Helper function to get column width from schema
@@ -173,6 +187,25 @@ export const renderDataSection = ({
   onFieldChange
 }: DataSectionProps) => {
   if (Array.isArray(data)) {
+    // Check if this is a PDF array (like appraisalReport)
+    if (data.length > 0 && data[0] && typeof data[0] === 'object' && 
+        'filename' in data[0] && 'data' in data[0]) {
+      return (
+        <div>
+          <SectionTitle>
+            {showIcons && <SectionIcon>{icon}</SectionIcon>}
+            {title}
+          </SectionTitle>
+          <PDFListField
+            fieldName={sectionName}
+            files={data as Array<{ filename: string; data: string }>}
+            isRTL={isRTL}
+            t={t}
+          />
+        </div>
+      );
+    }
+    
     const useTableLayout = isTableLayout(sectionName, schemaData);
     
     if (useTableLayout && data.length > 0) {
@@ -181,7 +214,7 @@ export const renderDataSection = ({
       
       // Special handling for financialData - display metrics as individual columns with metric name as header
       if (sectionName === 'financialData' && firstItem.metric) {
-        const dataColumns = columns.filter(col => col !== 'metric' && col !== 'comments');
+        const dataColumns = columns.filter(col => col !== 'metric');
         
         return (
           <div>
@@ -198,11 +231,6 @@ export const renderDataSection = ({
                         {t(`entrepreneur.fields.${column}`) || column}
                       </TableHeaderCell>
                     ))}
-                    {isEditing && (
-                      <TableHeaderCell $isRTL={isRTL}>
-                        {t('buttons.edit') || 'Edit'}
-                      </TableHeaderCell>
-                    )}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -215,21 +243,23 @@ export const renderDataSection = ({
                             flexDirection: 'column',
                             gap: '8px'
                           }}>
-                            <div style={{ 
-                              fontSize: '14px',
-                              fontWeight: 'normal',
-                              color: '#6b7280',
-                              lineHeight: '22px',
-                              display: 'flex',
-                              height: '28px',
-                              alignItems: 'center'
-                            }}>
-                              {t(`entrepreneur.fields.${item.metric}`) || item.metric}
-                            </div>
+                            {column !== 'comments' && (
+                              <div style={{ 
+                                fontSize: '14px',
+                                fontWeight: 'normal',
+                                color: '#6b7280',
+                                lineHeight: '22px',
+                                display: 'flex',
+                                height: '28px',
+                                alignItems: 'center'
+                              }}>
+                                {t(`entrepreneur.fields.${item.metric}`) || item.metric}
+                              </div>
+                            )}
                             {isEditing && onFieldChange ? (
                               <FormField
                                 fieldName={`${index}.${column}`}
-                                fieldSchema={{ type: 'integer', minimum: 0 }}
+                                fieldSchema={getArrayFieldSchema(column, sectionName, schemaData)}
                                 value={item[column]}
                                 onChange={(fieldName, value) => {
                                   const [rowIndex, colName] = fieldName.split('.');
@@ -253,7 +283,8 @@ export const renderDataSection = ({
                                 display: 'flex',
                                 alignItems: 'center',
                                 textAlign: isRTL ? 'right' : 'left',
-                                direction: isRTL ? 'rtl' : 'ltr'
+                                direction: isRTL ? 'rtl' : 'ltr',
+                                marginTop: column === 'comments' ? '36px' : '0'
                               }}>
                                 {formatValue(column, item[column])}
                               </div>
@@ -261,13 +292,6 @@ export const renderDataSection = ({
                           </div>
                         </TableCell>
                       ))}
-                      {isEditing && (
-                        <TableCell $isRTL={isRTL}>
-                          <EditButton onClick={() => console.log('Edit row', index)}>
-                            ✏️
-                          </EditButton>
-                        </TableCell>
-                      )}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -367,11 +391,14 @@ export const renderDataSection = ({
                   {typeof subData === 'object' && subData !== null ? (
                     Object.entries(subData).map(([key, value]) => {
                       const isTextarea = isTextareaField(key, sectionName, schemaData);
+                      const isPDF = isPDFField(key, sectionName, schemaData);
                       const rows = isTextarea ? getFieldRows(key, sectionName, schemaData) : undefined;
                       return (
                         <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName, schemaData)}>
                           <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
-                          {isTextarea ? (
+                          {isPDF ? (
+                            <PDFField fieldName={key} value={String(value)} isRTL={isRTL} t={t} />
+                          ) : isTextarea ? (
                             <TextareaValue $isRTL={isRTL} $rows={rows}>{String(value)}</TextareaValue>
                           ) : (
                             <DataValue $isRTL={isRTL}>{formatValue(key, value)}</DataValue>
@@ -382,7 +409,9 @@ export const renderDataSection = ({
                   ) : (
                     <FieldGroup $colspan={getFieldColspan(subKey, sectionName, schemaData)}>
                       <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${subKey}`) || subKey}</DataLabel>
-                      {isTextareaField(subKey, sectionName, schemaData) ? (
+                      {isPDFField(subKey, sectionName, schemaData) ? (
+                        <PDFField fieldName={subKey} value={String(subData)} isRTL={isRTL} t={t} />
+                      ) : isTextareaField(subKey, sectionName, schemaData) ? (
                         <TextareaValue $isRTL={isRTL} $rows={getFieldRows(subKey, sectionName, schemaData)}>{String(subData)}</TextareaValue>
                       ) : (
                         <DataValue $isRTL={isRTL}>{formatValue(subKey, subData)}</DataValue>
@@ -464,6 +493,9 @@ export const renderDataSection = ({
                                 const colspan = (fieldSchema as any)?.colspan || 1;
                                 const rows = (fieldSchema as any)?.rows;
                                 
+                                const isPDF = (fieldSchema as any)?.contentMediaType === 'application/octet-stream' && 
+                                             (fieldSchema as any)?.contentEncoding === 'base64';
+                                
                                 return (
                                   <FieldGroup key={key} $colspan={colspan}>
                                     <DataLabel $isRTL={isRTL}>{t(`entrepreneur.fields.${key}`) || key}</DataLabel>
@@ -477,6 +509,8 @@ export const renderDataSection = ({
                                         isRTL={isRTL}
                                         t={t}
                                       />
+                                    ) : isPDF ? (
+                                      <PDFField fieldName={key} value={String(value)} isRTL={isRTL} t={t} />
                                     ) : isTextarea ? (
                                       <TextareaValue $isRTL={isRTL} $rows={rows}>{String(value)}</TextareaValue>
                                     ) : (
@@ -529,7 +563,24 @@ export const renderDataSection = ({
               {Object.entries(data)
                 .filter(([key]) => !isPillField(key, sectionName, schemaData))
                 .map(([key, value]) => {
+                  // Check if this field is a PDF array (like appraisalReport)
+                  if (Array.isArray(value) && value.length > 0 && 
+                      value[0] && typeof value[0] === 'object' && 
+                      'filename' in value[0] && 'data' in value[0]) {
+                    return (
+                      <FieldGroup key={key} $colspan={2}>
+                        <PDFListField
+                          fieldName={key}
+                          files={value as Array<{ filename: string; data: string }>}
+                          isRTL={isRTL}
+                          t={t}
+                        />
+                      </FieldGroup>
+                    );
+                  }
+                  
                   const isTextarea = isTextareaField(key, sectionName, schemaData);
+                  const isPDF = isPDFField(key, sectionName, schemaData);
                   const rows = isTextarea ? getFieldRows(key, sectionName, schemaData) : undefined;
                   return (
                     <FieldGroup key={key} $colspan={getFieldColspan(key, sectionName, schemaData)}>
@@ -544,6 +595,8 @@ export const renderDataSection = ({
                           isRTL={isRTL}
                           t={t}
                         />
+                      ) : isPDF ? (
+                        <PDFField fieldName={key} value={String(value)} isRTL={isRTL} t={t} />
                       ) : isTextarea ? (
                         <TextareaValue $isRTL={isRTL} $rows={rows}>{String(value)}</TextareaValue>
                       ) : (
@@ -594,6 +647,7 @@ export const TabbedDataView: React.FC<TabbedDataViewProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editableData, setEditableData] = useState(data);
+  const [originalData, setOriginalData] = useState(data);
 
   const handleFieldChange = useCallback((fieldName: string, value: any) => {
     setEditableData((prev: any) => {
@@ -617,21 +671,30 @@ export const TabbedDataView: React.FC<TabbedDataViewProps> = ({
 
   const handleEdit = () => {
     setIsEditing(true);
+    setOriginalData(data); // Save current data as original
     setEditableData(data); // Reset to original data when starting edit
   };
 
   const handleSave = () => {
     console.log('Updated data:', editableData);
     setIsEditing(false);
+    setOriginalData(editableData); // Update original data to saved data
     // Here you would typically send the data to your backend
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setEditableData(data); // Reset to original data
+    setEditableData(originalData); // Reset to original data
   };
 
-  return (
+  const handleClear = () => {
+    console.log('Cancel changes button clicked - reverting to original values:', originalData);
+    setEditableData({ ...originalData });
+    // Keep edit mode active - don't call setIsEditing(false)
+  };
+
+  // Debug logging
+  console.log('TabbedDataView render - isEditing:', isEditing, 'buttons should show:', !isEditing ? 'Edit only' : 'Save, Cancel, Restore');  return (
     <Container dir={isRTL ? 'rtl' : 'ltr'}>
       <PageHeader>
         <PageTitle>{title}</PageTitle>
@@ -642,12 +705,15 @@ export const TabbedDataView: React.FC<TabbedDataViewProps> = ({
             </EditButton>
           ) : (
             <>
-              <EditButton $isEditing onClick={handleCancel}>
-                ❌ {t('buttons.cancel') || 'Cancel'}
-              </EditButton>
               <SaveButton onClick={handleSave}>
                 💾 {t('buttons.save') || 'Save'}
               </SaveButton>
+              <EditButton $isEditing onClick={handleCancel}>
+                ❌ {t('buttons.cancel') || 'Cancel'}
+              </EditButton>
+              <ClearButton onClick={handleClear}>
+                ↶ {t('buttons.cancelChanges') || 'Cancel Changes'}
+              </ClearButton>
             </>
           )}
         </ButtonContainer>

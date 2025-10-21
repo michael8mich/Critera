@@ -12,6 +12,26 @@ export const formatPercentage = (value: number): string => {
   return `${value.toFixed(1)}%`;
 };
 
+// Check if a field is a PDF field based on schema
+export const isPDFField = (key: string, sectionName: string = 'project', schemaData?: any): boolean => {
+  try {
+    if (!schemaData) return false;
+    
+    const sectionSchema = schemaData.properties[sectionName as keyof typeof schemaData.properties];
+    if (sectionSchema && 'properties' in sectionSchema) {
+      const fieldSchema = sectionSchema.properties[key as keyof typeof sectionSchema.properties];
+      if (fieldSchema && typeof fieldSchema === 'object') {
+        const field = fieldSchema as any;
+        return field.contentMediaType === 'application/octet-stream' && 
+               field.contentEncoding === 'base64';
+      }
+    }
+  } catch (error) {
+    console.error('Error checking PDF field:', error);
+  }
+  return false;
+};
+
 export const formatValue = (key: string, value: any): string => {
   if (typeof value === 'number') {
     // Currency fields

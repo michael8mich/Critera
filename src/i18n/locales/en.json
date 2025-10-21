@@ -43,7 +43,21 @@
     "save": "Save",
     "edit": "Edit",
     "delete": "Delete",
-    "close": "Close"
+    "close": "Close",
+    "editableField": "This field is editable",
+    "view": "View",
+    "download": "Download",
+    "pdfAvailable": "PDF Available",
+    "pdfNotAvailable": "PDF Not Available",
+    "viewPDF": "View PDF in new window",
+    "downloadPDF": "Download PDF file",
+    "noPDFsAvailable": "No PDF files available",
+    "file": "file",
+    "files": "files",
+    "document": "Document",
+    "clearField": "Clear Field", 
+    "restore": "Restore",
+    "cancelChanges": "Cancel Changes"
   },
   "forms": {
     "email": "Email",
@@ -125,7 +139,9 @@
       "profitMargin": "Profit Margin (%)",
       "appraisal": "Appraisal",
       "ai": "AI",
-      "banker": "Banker"
+      "banker": "Banker",
+      "comments": "Comments",
+      "notes": "Notes"
     }
   }
 }

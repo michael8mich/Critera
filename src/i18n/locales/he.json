@@ -43,7 +43,21 @@
     "save": "שמור",
     "edit": "ערוך",
     "delete": "מחק",
-    "close": "סגור"
+    "close": "סגור",
+    "editableField": "ניתן לעריכה",
+    "view": "צפה",
+    "download": "הורד",
+    "pdfAvailable": "PDF זמין",
+    "pdfNotAvailable": "PDF לא זמין",
+    "viewPDF": "צפה ב-PDF בחלון חדש",
+    "downloadPDF": "הורד קובץ PDF",
+    "noPDFsAvailable": "אין קבצי PDF זמינים",
+    "file": "קובץ",
+    "files": "קבצים",
+    "document": "מסמך",
+    "clearField": "נקה שדה",
+    "restore": "שחזר",
+    "cancelChanges": "בטל שינויים"
   },
   "forms": {
     "email": "אימייל",
@@ -125,7 +139,9 @@
       "profitMargin": "שולי רווח (%)",
       "appraisal": "שמאי",
       "ai": "בינה מלאכותית",
-      "banker": "בנקאי"
+      "banker": "בנקאי",
+      "comments": "הערות",
+      "notes": "הערות"
     }
   }
 }

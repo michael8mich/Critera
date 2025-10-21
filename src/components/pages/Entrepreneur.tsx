@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TabbedDataView, TabConfig } from '../common';
 import sampleData from '../../tempData/sampleBankData.json';
-import schemaData from '../../tempData/data.json';
+import schemaData from '../../tempData/EntrepreneurDataConfig.json';
 
 interface EntrepreneurProps {
   data?: any;
