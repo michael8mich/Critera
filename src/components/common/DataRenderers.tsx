@@ -1,5 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store/slices';
+import { updateCurrentData, resetToOriginal, saveChanges } from '../../store/slices/entrepreneurSlice';
 import {
   Container,
   PageHeader,
@@ -263,7 +266,8 @@ export const renderDataSection = ({
                                 value={item[column]}
                                 onChange={(fieldName, value) => {
                                   const [rowIndex, colName] = fieldName.split('.');
-                                  const newData = [...data];
+                                  // Create deep mutable copies to avoid read-only property issues
+                                  const newData = JSON.parse(JSON.stringify(data));
                                   newData[parseInt(rowIndex)][colName] = value;
                                   onFieldChange(sectionName, newData);
                                 }}
@@ -645,51 +649,68 @@ export const TabbedDataView: React.FC<TabbedDataViewProps> = ({
   showIcons = false,
   schemaData
 }) => {
+  const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
-  const [editableData, setEditableData] = useState(data);
-  const [originalData, setOriginalData] = useState(data);
+  
+  // Get data from Redux store
+  const storeData = useSelector((state: RootState) => state.entrepreneur.currentData);
+  const originalStoreData = useSelector((state: RootState) => state.entrepreneur.originalData);
+  
+  // Use store data if available, fallback to prop data
+  // Always create mutable copies to avoid read-only property issues
+  const editableData = storeData ? JSON.parse(JSON.stringify(storeData)) : JSON.parse(JSON.stringify(data));
+  const originalData = originalStoreData ? JSON.parse(JSON.stringify(originalStoreData)) : JSON.parse(JSON.stringify(data));
+  
+  // Type-safe data access
+  const currentTabData = editableData?.[activeTab];
 
   const handleFieldChange = useCallback((fieldName: string, value: any) => {
-    setEditableData((prev: any) => {
+    console.log('Field change:', fieldName, value, 'activeTab:', activeTab);
+    
+    // Get fresh data from store to ensure we have the latest state
+    const currentStoreData = storeData || data;
+    // Create a completely new object to break any references to read-only objects
+    const updatedData = JSON.parse(JSON.stringify(currentStoreData));
+    
+    try {
       // Handle array updates (like financialData)
       if (fieldName === activeTab) {
-        return {
-          ...prev,
-          [activeTab]: value
-        };
-      }
-      // Handle regular field updates
-      return {
-        ...prev,
-        [activeTab]: {
-          ...prev[activeTab],
-          [fieldName]: value
+        updatedData[activeTab] = JSON.parse(JSON.stringify(value));
+      } else {
+        // Handle regular field updates
+        if (updatedData[activeTab]) {
+          updatedData[activeTab][fieldName] = value;
         }
-      };
-    });
-  }, [activeTab]);
+      }
+      
+      console.log('Dispatching updated data:', updatedData);
+      // Dispatch update to Redux store
+      dispatch(updateCurrentData(updatedData));
+    } catch (error) {
+      console.error('Error updating field:', error);
+    }
+  }, [activeTab, storeData, data, dispatch]);
 
   const handleEdit = () => {
     setIsEditing(true);
-    setOriginalData(data); // Save current data as original
-    setEditableData(data); // Reset to original data when starting edit
+    // Data is now managed by Redux store, no local state updates needed
   };
 
   const handleSave = () => {
-    console.log('Updated data:', editableData);
+    console.log('Save button clicked - saving data to store and console:', editableData);
+    dispatch(saveChanges()); // This will console.log the changes and update original data
     setIsEditing(false);
-    setOriginalData(editableData); // Update original data to saved data
-    // Here you would typically send the data to your backend
   };
 
   const handleCancel = () => {
+    console.log('Cancel button clicked - reverting to original data:', originalData);
+    dispatch(resetToOriginal()); // Reset to original data from store
     setIsEditing(false);
-    setEditableData(originalData); // Reset to original data
   };
 
   const handleClear = () => {
     console.log('Cancel changes button clicked - reverting to original values:', originalData);
-    setEditableData({ ...originalData });
+    dispatch(resetToOriginal()); // Reset to original data but keep edit mode
     // Keep edit mode active - don't call setIsEditing(false)
   };
 
@@ -738,9 +759,9 @@ export const TabbedDataView: React.FC<TabbedDataViewProps> = ({
             key={activeTab}
             {...tabAnimation}
           >
-            {editableData[activeTab] && renderDataSection({
+            {currentTabData && renderDataSection({
               title: tabs.find(tab => tab.key === activeTab)?.label || '',
-              data: editableData[activeTab],
+              data: currentTabData,
               icon: tabs.find(tab => tab.key === activeTab)?.icon || '📄',
               t,
               isRTL,

@@ -779,6 +779,10 @@ export const FormField: React.FC<FormFieldProps> = ({
   const showEditIndicator = isEditing && (fieldSchema.editable === true);
   const editTooltipText = t('buttons.editableField') || 'This field is editable';
   const clearTooltipText = t('buttons.clearField') || 'Clear field';
+  
+  // Extract actual field name for placeholder (handle composite names like "0.banker" -> "banker")
+  const actualFieldName = fieldName.includes('.') ? fieldName.split('.').pop() : fieldName;
+  const placeholderText = isFieldEditable ? t(`entrepreneur.fields.${actualFieldName}`) || actualFieldName : '';
 
   // Handle PDF fields specially
   if (fieldSchema.contentMediaType === 'application/octet-stream' && 
@@ -797,7 +801,7 @@ export const FormField: React.FC<FormFieldProps> = ({
           disabled={!isFieldEditable}
           $isRTL={isRTL}
           $rows={fieldSchema.rows}
-          placeholder={isFieldEditable ? t(`entrepreneur.fields.${fieldName}`) || fieldName : ''}
+          placeholder={placeholderText}
         />
       </FormFieldWrapper>
     );
@@ -813,7 +817,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         onChange={handleChange}
         disabled={!isFieldEditable}
         $isRTL={isRTL}
-        placeholder={isFieldEditable ? t(`entrepreneur.fields.${fieldName}`) || fieldName : ''}
+        placeholder={placeholderText}
         min={fieldSchema.minimum}
         max={fieldSchema.maximum}
         pattern={fieldSchema.pattern}

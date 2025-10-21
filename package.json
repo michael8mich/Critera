@@ -2,7 +2,7 @@
   "name": "critera",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://michael8mich.github.io/Critera",
+  "homepage": "/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

@@ -71,6 +71,7 @@
     "hebrew": "עברית",
     "english": "English"
   },
+  "loading": "טוען נתונים...",
   "entrepreneur": {
     "title": "מערכת ניהול יזמים",
     "tabs": {

@@ -71,6 +71,7 @@
     "hebrew": "עברית",
     "english": "English"
   },
+  "loading": "Loading data...",
   "entrepreneur": {
     "title": "Entrepreneur Management System",
     "tabs": {
