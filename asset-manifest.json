@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Critera/static/css/main.4431bd65.css",
+    "main.js": "/Critera/static/js/main.26ef29ac.js",
+    "index.html": "/Critera/index.html",
+    "main.4431bd65.css.map": "/Critera/static/css/main.4431bd65.css.map",
+    "main.26ef29ac.js.map": "/Critera/static/js/main.26ef29ac.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4431bd65.css",
+    "static/js/main.26ef29ac.js"
+  ]
+}
