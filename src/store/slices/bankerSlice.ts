@@ -51,8 +51,8 @@ const calculateDelta = (original: any, current: any, path: string = ''): any => 
   return delta;
 };
 
-// Type definition for the entrepreneur data structure
-type EntrepreneurData = {
+// Type definition for the banker data structure
+type BankerData = {
   entrepreneur: {
     firstName: string;
     lastName: string;
@@ -67,8 +67,6 @@ type EntrepreneurData = {
     externalData: string;
     contractorProjects: number;
     entrepreneurProjects: number;
-  };
-  funding: {
     fundingType: string;
     previousFunders: string;
     numProjectsAsContractor: number;
@@ -127,24 +125,24 @@ type EntrepreneurData = {
   }>;
 };
 
-interface EntrepreneurState {
-  originalData: EntrepreneurData | null;
-  currentData: EntrepreneurData | null;
+interface BankerState {
+  originalData: BankerData | null;
+  currentData: BankerData | null;
   isDataLoaded: boolean;
 }
 
-const initialState: EntrepreneurState = {
+const initialState: BankerState = {
   originalData: null,
   currentData: null,
   isDataLoaded: false, // Will be set to true when data is loaded
 };
 
-export const entrepreneurSlice = createSlice({
-  name: 'entrepreneur',
+export const bankerSlice = createSlice({
+  name: 'banker',
   initialState,
   reducers: {
     // Load data from JSON file (simulating server response)
-    loadEntrepreneurData: (state, action: PayloadAction<EntrepreneurData>) => {
+    loadBankerData: (state, action: PayloadAction<BankerData>) => {
       // Create deep mutable copies to avoid read-only property issues
       const mutableData = JSON.parse(JSON.stringify(action.payload));
       state.originalData = mutableData;
@@ -153,7 +151,7 @@ export const entrepreneurSlice = createSlice({
     },
     
     // Update current form data during editing
-    updateCurrentData: (state, action: PayloadAction<EntrepreneurData>) => {
+    updateCurrentData: (state, action: PayloadAction<BankerData>) => {
       try {
         // Create a deep mutable copy with additional safeguards
         const newData = JSON.parse(JSON.stringify(action.payload));
@@ -196,10 +194,10 @@ export const entrepreneurSlice = createSlice({
 });
 
 export const { 
-  loadEntrepreneurData, 
+  loadBankerData, 
   updateCurrentData, 
   resetToOriginal, 
   saveChanges 
-} = entrepreneurSlice.actions;
+} = bankerSlice.actions;
 
-export default entrepreneurSlice.reducer;
+export default bankerSlice.reducer;

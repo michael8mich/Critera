@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/slices';
-import { updateCurrentData, resetToOriginal, saveChanges } from '../../store/slices/entrepreneurSlice';
+import { updateCurrentData, resetToOriginal, saveChanges } from '../../store/slices/bankerSlice';
 import {
   Container,
   PageHeader,
@@ -653,8 +653,8 @@ export const TabbedDataView: React.FC<TabbedDataViewProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   
   // Get data from Redux store
-  const storeData = useSelector((state: RootState) => state.entrepreneur.currentData);
-  const originalStoreData = useSelector((state: RootState) => state.entrepreneur.originalData);
+  const storeData = useSelector((state: RootState) => state.banker.currentData);
+  const originalStoreData = useSelector((state: RootState) => state.banker.originalData);
   
   // Use store data if available, fallback to prop data
   // Always create mutable copies to avoid read-only property issues

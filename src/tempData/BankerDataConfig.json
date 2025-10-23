@@ -20,7 +20,11 @@
           "mortgage": { "type": "string" },
           "encumbrance": { "type": "string" },
           "contractorProjects": { "type": "integer", "shape":"bottom" },
-          "entrepreneurProjects": { "type": "integer", "shape":"bottom" }
+          "entrepreneurProjects": { "type": "integer", "shape":"bottom" },
+          "fundingType": { "type": "string" },
+          "previousFunders": { "type": "string" },
+          "numProjectsAsContractor": { "type": "button", "shape":"bottom", "minimum": 0 },
+          "numProjectsAsEntrepreneur": { "type": "button", "shape":"bottom", "minimum": 0 }
           }, 
           "width": "50%"
         },
@@ -36,50 +40,51 @@
       "required": ["firstName", "lastName", "role", "companyName", "nc", "phone", "email", "owner", "mortgage", "encumbrance"],
       "additionalProperties": false
     },
-    "funding": {
-      "type": "object",
-      "properties": {
-        "fundingType": { "type": "string" },
-        "previousFunders": { "type": "string" },
-        "numProjectsAsContractor": { "type": "button", "shape":"bottom", "minimum": 0 },
-        "numProjectsAsEntrepreneur": { "type": "button", "shape":"bottom", "minimum": 0 }
-      },
-      "required": ["fundingType", "previousFunders", "numProjectsAsContractor", "numProjectsAsEntrepreneur"],
-      "additionalProperties": false
-    },
     "project": {
       "type": "object",
       "properties": {
-        "type": { "type": "string" },
-        "city": { "type": "string" },
-        "street": { "type": "string" },
-        "number": { "type": "integer", "minimum": 0 },
-        "block": { "type": "integer", "minimum": 0 },
-        "parcel": { "type": "integer", "minimum": 0 },
-        "officialStatus": { "type": "string" },
-        "plannedStatus": { "type": "string" },
-        "ownersAppartements": { "type": "integer", "minimum": 0 },
-        "sellingAppartements": { "type": "integer", "minimum": 0 },
-        "soldAppartements": { "type": "integer", "minimum": 0 },
-        "totalSales": { "type": "integer", "minimum": 0 },
-        "parkingType": { "type": "string" },
-        "parkingCount": { "type": "integer", "minimum": 0 },
-        "appraisalReport": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "filename": { "type": "string" },
-              "data": {
-                "type": "string",
-                "contentEncoding": "base64",
-                "contentMediaType": "application/octet-stream"
-              }
+        "columns": [ 
+        {
+          "properties": {
+          "type": { "type": "string" },
+          "city": { "type": "string" },
+          "street": { "type": "string" },
+          "number": { "type": "integer", "shape":"bottom", "minimum": 0 },
+          "block": { "type": "integer", "shape":"bottom","minimum": 0 },
+          "parcel": { "type": "integer", "minimum": 0 },
+          "officialStatus": { "type": "string" },
+          "plannedStatus": { "type": "string" },
+          "ownersAppartements": { "type": "integer", "minimum": 0 },
+          "sellingAppartements": { "type": "integer", "minimum": 0 },
+          "soldAppartements": { "type": "integer", "minimum": 0 },
+          "totalSales": { "type": "integer", "minimum": 0 },
+          "parkingType": { "type": "string" },
+          "parkingCount": { "type": "integer", "minimum": 0 }
+          }, 
+          "width": "50%"
+        },
+        {
+          "properties": {
+          "appraisalReport": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "filename": { "type": "string" },
+                "data": {
+                  "type": "string",
+                  "contentEncoding": "base64",
+                  "contentMediaType": "application/octet-stream"
+                }
+              },
+              "required": ["filename", "data"]
             },
-            "required": ["filename", "data"]
+            "minItems": 0
+          }
           },
-          "minItems": 0
+          "width": "50%"
         }
+        ]
       },
       "required": ["type", "city", "street", "number", "block", "parcel", "officialStatus", "plannedStatus", "ownersAppartements", "sellingAppartements", "soldAppartements", "totalSales", "parkingType", "parkingCount", "appraisalReport"],
       "additionalProperties": false

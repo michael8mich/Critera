@@ -1,7 +1,8 @@
 {
   "nav": {
     "home": "Home",
-    "entrepreneur": "Entrepreneur Management",
+    "banker": "Banker Management",
+    "entrepreneur": "Banker Management",
     "about": "About",
     "services": "Services",
     "contact": "Contact",
@@ -73,7 +74,7 @@
   },
   "loading": "Loading data...",
   "entrepreneur": {
-    "title": "Entrepreneur Management System",
+    "title": "Banker Management System",
     "tabs": {
       "entrepreneur": "Entrepreneur",
       "funding": "Funding",

@@ -7,11 +7,11 @@ import { loadBankerData } from '../../store/slices/bankerSlice';
 import sampleData from '../../tempData/sampleBankData.json';
 import schemaData from '../../tempData/BankerDataConfig.json';
 
-interface EntrepreneurProps {
+interface BankerProps {
   // No props needed - data comes from Redux store
 }
 
-const Entrepreneur: React.FC<EntrepreneurProps> = () => {
+const Banker: React.FC<BankerProps> = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('entrepreneur');
@@ -70,4 +70,4 @@ const Entrepreneur: React.FC<EntrepreneurProps> = () => {
   );
 };
 
-export default Entrepreneur;
+export default Banker;

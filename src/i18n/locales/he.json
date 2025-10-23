@@ -1,7 +1,8 @@
 {
   "nav": {
     "home": "בית",
-    "entrepreneur": "ניהול יזמים",
+    "banker": "ניהול בנקאים",
+    "entrepreneur": "ניהול בנקאים", 
     "about": "אודות",
     "services": "שירותים",
     "contact": "צור קשר",
@@ -73,7 +74,7 @@
   },
   "loading": "טוען נתונים...",
   "entrepreneur": {
-    "title": "מערכת ניהול יזמים",
+    "title": "מערכת ניהול בנקאים",
     "tabs": {
       "entrepreneur": "יזם אל",
       "funding": "מימון",

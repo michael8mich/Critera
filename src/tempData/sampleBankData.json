@@ -10,15 +10,13 @@
     "owner": "יוסי כהן",
     "mortgage": "כן",
     "encumbrance": "לא",
-    "externalData": "זהו תוכן שדה נתונים חיצוניים. הוא יכול להכיל מספר שורות של מידע ופרטים נוספים על היזם או הפרויקט. ניתן להוסיף כאן הערות, הסברים נוספים או כל מידע רלוונטי אחר.",
     "contractorProjects": 15,
-    "entrepreneurProjects": 8
-  },
-  "funding": {
+    "entrepreneurProjects": 8,
     "fundingType": "מימון בנקאי",
     "previousFunders": "בנק הפועלים, בנק לאומי",
     "numProjectsAsContractor": 15,
-    "numProjectsAsEntrepreneur": 8
+    "numProjectsAsEntrepreneur": 8,
+    "externalData": "זהו תוכן שדה נתונים חיצוניים. הוא יכול להכיל מספר שורות של מידע ופרטים נוספים על היזם או הפרויקט. ניתן להוסיף כאן הערות, הסברים נוספים או כל מידע רלוונטי אחר."
   },
   "project": {
     "type": "מגורים",

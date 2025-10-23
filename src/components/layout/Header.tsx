@@ -81,10 +81,10 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
               {t('nav.home') || 'Home'}
             </StyledLink>
             <StyledLink 
-              to="/entrepreneur" 
-              $isActive={location.pathname === '/entrepreneur' || location.pathname === '/'}
+              to="/banker" 
+              $isActive={location.pathname === '/banker' || location.pathname === '/' || location.pathname === '/entrepreneur'}
             >
-              {t('nav.entrepreneur') || 'Entrepreneur'}
+              {t('nav.banker') || 'Banker'}
             </StyledLink>
           </NavLinks>
           <RightSection>
